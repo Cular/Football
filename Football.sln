@@ -5,6 +5,12 @@ VisualStudioVersion = 15.0.28010.2003
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Football.Web", "Football.Web\Football.Web.csproj", "{4736E713-DEDF-44BF-AF48-0AD1F3EFAEB7}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{6F294679-E3B3-47B7-9AA7-754086CE09EE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Models", "Models", "{CA8694E4-8F7C-41A5-94A7-31D29240EC18}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models.Data", "Models\Models.Data\Models.Data.csproj", "{F0D81B0C-7545-4519-8A12-44B512AA0BAB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,9 +21,16 @@ Global
 		{4736E713-DEDF-44BF-AF48-0AD1F3EFAEB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4736E713-DEDF-44BF-AF48-0AD1F3EFAEB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4736E713-DEDF-44BF-AF48-0AD1F3EFAEB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0D81B0C-7545-4519-8A12-44B512AA0BAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0D81B0C-7545-4519-8A12-44B512AA0BAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0D81B0C-7545-4519-8A12-44B512AA0BAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0D81B0C-7545-4519-8A12-44B512AA0BAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F0D81B0C-7545-4519-8A12-44B512AA0BAB} = {CA8694E4-8F7C-41A5-94A7-31D29240EC18}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9527C7E5-BE9A-48AB-BFE4-382C6E92922C}
