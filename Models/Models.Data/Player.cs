@@ -4,7 +4,6 @@
 
 namespace Models.Data
 {
-    using System;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
@@ -12,7 +11,7 @@ namespace Models.Data
     /// The user.
     /// </summary>
     [Table("players")]
-    public class Player : Entity<Guid>
+    public class Player : Entity<string>
     {
         /// <summary>
         /// Gets or sets the password hash.
@@ -20,23 +19,15 @@ namespace Models.Data
         /// <value>
         /// The password hash.
         /// </value>
+        [Required]
         [Column("passwordhash")]
         public string PasswordHash { get; set; }
 
         /// <summary>
-        /// Gets or sets the email.
+        /// Gets or sets the email player.
         /// </summary>
-        /// <value>
-        /// The email.
-        /// </value>
-        [EmailAddress]
+        [Required]
         [Column("email")]
         public string Email { get; set; }
-
-        /// <summary>
-        /// Gets or sets the alias player.
-        /// </summary>
-        [Column("alias")]
-        public string Alias { get; set; }
     }
 }

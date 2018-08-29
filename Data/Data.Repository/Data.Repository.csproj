@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <DocumentationFile>W:\Work\Football\Data\Data.Repository\Data.Repository.xml</DocumentationFile>
+    <DocumentationFile>bin\x64\Debug\netcoreapp2.1\Data.Repository.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -36,8 +36,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Data.DataBaseContext\Data.DataBaseContext.csproj" />
     <ProjectReference Include="..\..\Models\Models.Data\Models.Data.csproj" />
+    <ProjectReference Include="..\Data.DataBaseContext\Data.DataBaseContext.csproj" />
   </ItemGroup>
 
 </Project>

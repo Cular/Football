@@ -6,15 +6,25 @@ namespace Football.Web
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
+    using AutoMapper;
+    using Data.DataBaseContext;
+    using Data.Repository.Implementation;
+    using Data.Repository.Interfaces;
+    using Football.Core.Middleware;
+    using Football.Web.Validation;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
+    using Models.Mapper;
+    using Swashbuckle.AspNetCore.SwaggerGen;
 
     /// <summary>
     /// The startup.
@@ -27,7 +37,10 @@ namespace Football.Web
         /// <param name="configuration">The configuration.</param>
         public Startup(IConfiguration configuration)
         {
-            this.Configuration = configuration;
+            this.Configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .AddConfiguration(configuration)
+                .Build();
         }
 
         /// <summary>
@@ -44,7 +57,29 @@ namespace Football.Web
         /// <param name="services">The services.</param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(typeof(ValidationModelAttribute));
+            })
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddAutoMapper(typeof(MainProfile));
+
+            services.AddSwaggerGen(x =>
+            {
+                x.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info { Version = "v1", Title = "Football API" });
+                IncludeComments(x);
+            });
+
+            services.AddDbContext<FootballContext>(
+                opt =>
+                {
+                    opt.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
+                },
+                contextLifetime: ServiceLifetime.Scoped,
+                optionsLifetime: ServiceLifetime.Scoped);
+
+            services.AddScoped<IPlayerRepository, PlayerRepository>();
         }
 
         /// <summary>
@@ -59,7 +94,35 @@ namespace Football.Web
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Football API V1");
+            });
+
             app.UseMvc();
+        }
+
+        /// <summary>
+        /// Includes the comments.
+        /// </summary>
+        /// <param name="options">The swagger options.</param>
+        private static void IncludeComments(SwaggerGenOptions options)
+        {
+            var modelsDoc = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Models.Dto.xml");
+            if (File.Exists(modelsDoc))
+            {
+                options.IncludeXmlComments(modelsDoc);
+            }
+
+            var apiDoc = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Football.Web.xml");
+            if (File.Exists(apiDoc))
+            {
+                options.IncludeXmlComments(apiDoc);
+            }
         }
     }
 }
