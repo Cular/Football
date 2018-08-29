@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="7.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Football.Core\Football.Core.csproj" />
+    <ProjectReference Include="..\Models.Data\Models.Data.csproj" />
+    <ProjectReference Include="..\Models.Dto\Models.Dto.csproj" />
+  </ItemGroup>
+
+</Project>

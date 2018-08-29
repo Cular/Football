@@ -1,0 +1,13 @@
+﻿{
+  "$schema": "https://raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/master/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
+  "settings": {
+    "documentationRules": {
+      "companyName": "Yarik Home",
+      "copyrightText": "All rights maybe reserved. © Yarik",
+      "xmlHeader": true,
+      "fileNamingConvention": "stylecop",
+      "headerDecoration": "--------------------------------------------------------------------------------------------------------------------"
+    },
+    "layoutRules": {"newlineAtEndOfFile": "require"}
+  }
+}

@@ -6,12 +6,11 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>W:\Work\Football\Football\Football\Models\Models.Data\Models.Data.xml</DocumentationFile>
+    <DocumentationFile>bin\x64\Debug\netcoreapp2.1\Models.Dto.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <DocumentationFile>bin\x64\Debug\netcoreapp2.1\Models.Data.xml</DocumentationFile>
-    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <DocumentationFile>bin\x64\Debug\netcoreapp2.1\Models.Dto.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
