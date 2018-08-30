@@ -35,8 +35,8 @@ namespace Football.Core.Extensions
 
             response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-            var result = JsonConvert.SerializeObject(new { error = exception.Message });
-            return response.WriteAsync(result);
+            var result = new { Error = isDebug ? $"{exception.Message}. StackTrace: {exception.StackTrace} " : exception.Message };
+            return response.WriteAsync(JsonConvert.SerializeObject(result));
         }
     }
 }
