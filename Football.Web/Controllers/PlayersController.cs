@@ -31,6 +31,7 @@ namespace Football.Web.Controllers
         /// Initializes a new instance of the <see cref="PlayersController"/> class.
         /// </summary>
         /// <param name="playerRepository">The player repository.</param>
+        /// <param name="mapper">The mapper.</param>
         /// <exception cref="ArgumentNullException">playerRepository</exception>
         public PlayersController(IPlayerRepository playerRepository, IMapper mapper)
         {
@@ -52,7 +53,7 @@ namespace Football.Web.Controllers
             var result = await this.playerRepository.GetPlayerByAlias(alias);
             if (result != null)
             {
-                return this.Ok();
+                return this.Ok(this.mapper.Map<PlayerDto>(result));
             }
 
             return this.NotFound();

@@ -8,7 +8,7 @@ namespace Data.DataBaseContext
     {
         public FootballContext(DbContextOptions opts) : base(opts)
         {
-            Database.EnsureCreated();
+            Database.Migrate();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
