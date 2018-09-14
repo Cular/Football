@@ -37,6 +37,7 @@
     <ProjectReference Include="..\Data\Data.Repository\Data.Repository.csproj" />
     <ProjectReference Include="..\Models\Models.Dto\Models.Dto.csproj" />
     <ProjectReference Include="..\Models\Models.Mapper\Models.Mapper.csproj" />
+    <ProjectReference Include="..\Models\Models.Notification\Models.Notification.csproj" />
   </ItemGroup>
 
   <ItemGroup>

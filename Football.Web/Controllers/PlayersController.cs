@@ -42,36 +42,21 @@ namespace Football.Web.Controllers
         /// <summary>
         /// Gets the player.
         /// </summary>
-        /// <param name="alias">The identifier.</param>
+        /// <param name="id">The identifier.</param>
         /// <returns>The player or null.</returns>
         [HttpGet]
-        [Route("{alias}")]
+        [Route("{id}")]
         [ProducesResponseType(200, Type = typeof(PlayerDto))]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> GetPlayer([FromRoute]string alias)
+        public async Task<IActionResult> GetPlayer([FromRoute]string id)
         {
-            var result = await this.playerRepository.GetPlayerByAlias(alias);
+            var result = await this.playerRepository.GetPlayerByAlias(id);
             if (result != null)
             {
                 return this.Ok(this.mapper.Map<PlayerDto>(result));
             }
 
             return this.NotFound();
-        }
-
-        /// <summary>
-        /// Creates the player.
-        /// </summary>
-        /// <param name="dtoCreate">The dto create.</param>
-        /// <returns>Created player</returns>
-        [HttpPost]
-        [ProducesResponseType(200, Type = typeof(PlayerDto))]
-        public async Task<IActionResult> CreatePlayer([FromBody] PlayerDtoCreate dtoCreate)
-        {
-            var player = this.mapper.Map<Player>(dtoCreate);
-            var result = await this.playerRepository.CreateAsync(player);
-
-            return this.Ok(this.mapper.Map<PlayerDto>(result));
         }
     }
 }

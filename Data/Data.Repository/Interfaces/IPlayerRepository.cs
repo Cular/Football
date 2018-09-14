@@ -19,5 +19,13 @@ namespace Data.Repository.Interfaces
         /// <param name="alias">The alias.</param>
         /// <returns>The player.</returns>
         Task<Player> GetPlayerByAlias(string alias);
+
+        /// <summary>
+        /// Determines whether the specified alias is unique.
+        /// </summary>
+        /// <param name="alias">The alias.</param>
+        /// <param name="email">The email.</param>
+        /// <returns>Is unique alias and email.</returns>
+        Task<bool> IsExist(string alias, string email);
     }
 }
