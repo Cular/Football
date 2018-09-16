@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.DataBaseContext.Migrations
 {
     [DbContext(typeof(FootballContext))]
-    [Migration("20180916121951_ActivationEntity")]
-    partial class ActivationEntity
+    [Migration("20180916152515_ADD_Player_Game_Activation")]
+    partial class ADD_Player_Game_Activation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -69,9 +69,13 @@ namespace Data.DataBaseContext.Migrations
                         .HasColumnName("id");
 
                     b.Property<string>("PlayerId")
+                        .IsRequired()
                         .HasColumnName("playerid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PlayerId")
+                        .IsUnique();
 
                     b.ToTable("playeractivations");
                 });
@@ -80,7 +84,16 @@ namespace Data.DataBaseContext.Migrations
                 {
                     b.HasOne("Models.Data.Player", "Admin")
                         .WithMany()
-                        .HasForeignKey("AdminId");
+                        .HasForeignKey("AdminId")
+                        .OnDelete(DeleteBehavior.SetNull);
+                });
+
+            modelBuilder.Entity("Models.Data.PlayerActivation", b =>
+                {
+                    b.HasOne("Models.Data.Player", "Player")
+                        .WithMany()
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Data.DataBaseContext.Migrations
 {
-    public partial class FirstMigration : Migration
+    public partial class ADD_Player_Game_Activation : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,7 +13,8 @@ namespace Data.DataBaseContext.Migrations
                 {
                     id = table.Column<string>(nullable: false),
                     passwordhash = table.Column<string>(nullable: false),
-                    email = table.Column<string>(nullable: false)
+                    email = table.Column<string>(nullable: false),
+                    active = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -35,13 +36,37 @@ namespace Data.DataBaseContext.Migrations
                         column: x => x.adminid,
                         principalTable: "players",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "playeractivations",
+                columns: table => new
+                {
+                    id = table.Column<string>(nullable: false),
+                    playerid = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_playeractivations", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_playeractivations_players_playerid",
+                        column: x => x.playerid,
+                        principalTable: "players",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_games_adminid",
                 table: "games",
                 column: "adminid");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_playeractivations_playerid",
+                table: "playeractivations",
+                column: "playerid",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_players_email",
@@ -54,6 +79,9 @@ namespace Data.DataBaseContext.Migrations
         {
             migrationBuilder.DropTable(
                 name: "games");
+
+            migrationBuilder.DropTable(
+                name: "playeractivations");
 
             migrationBuilder.DropTable(
                 name: "players");

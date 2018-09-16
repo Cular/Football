@@ -67,13 +67,13 @@ namespace Data.DataBaseContext.Migrations
                         .HasColumnName("id");
 
                     b.Property<string>("PlayerId")
+                        .IsRequired()
                         .HasColumnName("playerid");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PlayerId")
-                        .IsUnique()
-                        .HasFilter("[playerid] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("playeractivations");
                 });
@@ -82,14 +82,16 @@ namespace Data.DataBaseContext.Migrations
                 {
                     b.HasOne("Models.Data.Player", "Admin")
                         .WithMany()
-                        .HasForeignKey("AdminId");
+                        .HasForeignKey("AdminId")
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("Models.Data.PlayerActivation", b =>
                 {
                     b.HasOne("Models.Data.Player", "Player")
-                        .WithOne()
-                        .HasForeignKey("Models.Data.PlayerActivation", "PlayerId");
+                        .WithMany()
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

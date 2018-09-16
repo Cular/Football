@@ -12,7 +12,7 @@ namespace Data.DataBaseContext.Map
         public void Configure(EntityTypeBuilder<PlayerActivation> builder)
         {
             builder.HasKey(a => a.Id);
-            builder.HasOne(a => a.Player).WithOne();
+            builder.HasIndex(a => a.PlayerId).IsUnique(true);
         }
     }
 }

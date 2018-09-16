@@ -12,7 +12,7 @@ namespace Data.DataBaseContext.Map
         public void Configure(EntityTypeBuilder<Game> builder)
         {
             builder.HasKey(g => g.Id);
-            builder.HasOne(g => g.Admin).WithMany().HasForeignKey(g => g.AdminId);
+            builder.HasOne(g => g.Admin).WithMany().HasForeignKey(g => g.AdminId).HasPrincipalKey(p => p.Id).OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

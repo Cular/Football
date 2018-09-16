@@ -6,6 +6,7 @@ namespace Models.Data
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Text;
 
@@ -21,7 +22,7 @@ namespace Models.Data
         /// <value>
         /// The player identifier.
         /// </value>
-        [ForeignKey("playerid")]
+        [Required]
         [Column("playerid")]
         public string PlayerId { get; set; }
 

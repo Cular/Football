@@ -87,6 +87,7 @@ namespace Football.Web.Controllers
             activation.Player.Active = true;
 
             await this.playerRepository.UpdateAsync(activation.Player);
+            await this.activationRepository.DeleteAsync(activation);
 
             return this.Ok();
         }
