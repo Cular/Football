@@ -38,5 +38,18 @@ namespace Data.Repository.Implementation
         {
             return await this.players.FirstOrDefaultAsync(p => p.Id == alias);
         }
+
+        /// <summary>
+        /// Determines whether the specified alias is unique.
+        /// </summary>
+        /// <param name="alias">The alias.</param>
+        /// <param name="email">The email.</param>
+        /// <returns>
+        /// Is unique alias and email.
+        /// </returns>
+        public async Task<bool> IsExist(string alias, string email)
+        {
+            return await this.players.AnyAsync(p => p.Email == email || p.Id == alias);
+        }
     }
 }

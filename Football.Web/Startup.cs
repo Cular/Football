@@ -5,14 +5,12 @@
 namespace Football.Web
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
-    using System.Threading.Tasks;
     using AutoMapper;
     using Data.DataBaseContext;
     using Data.Repository.Implementation;
     using Data.Repository.Interfaces;
+    using Football.Core.Extensions;
     using Football.Core.Middleware;
     using Football.Web.Validation;
     using Microsoft.AspNetCore.Builder;
@@ -22,8 +20,10 @@ namespace Football.Web
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
     using Models.Mapper;
+    using Models.Notification;
+    using Services.Notification;
+    using Services.Registration;
     using Swashbuckle.AspNetCore.SwaggerGen;
 
     /// <summary>
@@ -79,7 +79,11 @@ namespace Football.Web
                 contextLifetime: ServiceLifetime.Scoped,
                 optionsLifetime: ServiceLifetime.Scoped);
 
+            services.AddSmtpClient();
             services.AddScoped<IPlayerRepository, PlayerRepository>();
+            services.AddScoped<IPlayerActivationRepository, PlayerActivationRepository>();
+            services.AddScoped<INotificationService, EmailService>();
+            services.AddScoped<IRegisterNotifier, RegisterNotifier>();
         }
 
         /// <summary>
