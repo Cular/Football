@@ -26,6 +26,7 @@ namespace Football.Web.Controllers
         private readonly IPlayerRepository playerRepository;
         private readonly IMapper mapper;
         private readonly IRegisterNotifier notifier;
+        private readonly IPlayerActivationRepository activationRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RegistrationController"/> class.
@@ -33,11 +34,13 @@ namespace Football.Web.Controllers
         /// <param name="playerRepository">The player repository.</param>
         /// <param name="mapper">The mapper.</param>
         /// <param name="notifier">The notify service.</param>
-        public RegistrationController(IPlayerRepository playerRepository, IMapper mapper, IRegisterNotifier notifier)
+        /// <param name="activationRepository">activation repository.</param>
+        public RegistrationController(IPlayerRepository playerRepository, IMapper mapper, IRegisterNotifier notifier, IPlayerActivationRepository activationRepository)
         {
             this.playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.notifier = notifier ?? throw new ArgumentNullException(nameof(notifier));
+            this.activationRepository = activationRepository ?? throw new ArgumentNullException(nameof(activationRepository));
         }
 
         /// <summary>
@@ -59,6 +62,31 @@ namespace Football.Web.Controllers
             var result = await this.playerRepository.CreateAsync(player);
 
             await this.notifier.SendRegisterInfo(result);
+
+            return this.Ok();
+        }
+
+        /// <summary>
+        /// Activates the specified code.
+        /// </summary>
+        /// <param name="code">The code.</param>
+        /// <returns>Void result.</returns>
+        [HttpPost]
+        [Route("activate/{code}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> Activate([FromRoute] string code)
+        {
+            var activation = await this.activationRepository.GetAsync(code);
+
+            if (activation == null)
+            {
+                return this.NotFound();
+            }
+
+            activation.Player.Active = true;
+
+            await this.playerRepository.UpdateAsync(activation.Player);
 
             return this.Ok();
         }

@@ -21,7 +21,16 @@ namespace Models.Data
         /// <value>
         /// The player identifier.
         /// </value>
+        [ForeignKey("playerid")]
         [Column("playerid")]
         public string PlayerId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the player.
+        /// </summary>
+        /// <value>
+        /// The player.
+        /// </value>
+        public Player Player { get; set; }
     }
 }
