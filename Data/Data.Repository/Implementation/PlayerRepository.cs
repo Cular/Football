@@ -49,7 +49,7 @@ namespace Data.Repository.Implementation
         /// </returns>
         public async Task<bool> IsExist(string alias, string email)
         {
-            return await this.players.AnyAsync(p => p.Email == email && p.Id == alias);
+            return await this.players.AnyAsync(p => p.Email == email || p.Id == alias);
         }
     }
 }

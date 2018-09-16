@@ -15,11 +15,13 @@ namespace Data.DataBaseContext
         {
             modelBuilder.ApplyConfiguration(new PlayerMap());
             modelBuilder.ApplyConfiguration(new GameMap());
+            modelBuilder.ApplyConfiguration(new PlayerActivationMap());
 
             base.OnModelCreating(modelBuilder);
         }
 
         public DbSet<Game> Games { get; set; }
         public DbSet<Player> Players { get; set; }
+        public DbSet<PlayerActivation> PlayerActivations { get; set; }
     }
 }

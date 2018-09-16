@@ -38,11 +38,13 @@ namespace Services.Notification
         public Task Notify(Message message)
         {
             MailMessage mail = new MailMessage();
+            mail.From = new MailAddress("cular.live@gmail.com");
             mail.To.Add(new MailAddress(message.UserId));
             mail.Subject = message.Title;
             mail.Body = message.Text;
 
-            return this.smtpClient.SendMailAsync(mail);
+            return Task.CompletedTask;
+            //return this.smtpClient.SendMailAsync(mail);
         }
     }
 }

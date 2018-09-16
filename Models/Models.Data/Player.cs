@@ -29,5 +29,14 @@ namespace Models.Data
         [Required]
         [Column("email")]
         public string Email { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="Player"/> is active.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if active; otherwise, <c>false</c>.
+        /// </value>
+        [Column("active")]
+        public bool Active { get; set; }
     }
 }

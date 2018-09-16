@@ -22,6 +22,8 @@ namespace Football.Web
     using Microsoft.Extensions.Logging;
     using Models.Mapper;
     using Models.Notification;
+    using Services.Notification;
+    using Services.Registration;
     using Swashbuckle.AspNetCore.SwaggerGen;
 
     /// <summary>
@@ -78,8 +80,10 @@ namespace Football.Web
                 optionsLifetime: ServiceLifetime.Scoped);
 
             services.AddSmtpClient();
-
             services.AddScoped<IPlayerRepository, PlayerRepository>();
+            services.AddScoped<IPlayerActivationRepository, PlayerActivationRepository>();
+            services.AddScoped<INotificationService, EmailService>();
+            services.AddScoped<IRegisterNotifier, RegisterNotifier>();
         }
 
         /// <summary>
