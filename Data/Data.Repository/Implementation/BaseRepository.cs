@@ -47,6 +47,7 @@ namespace Data.Repository.Implementation
         /// </returns>
         public async Task<T> CreateAsync(T entity)
         {
+            //TODO: handling dublicate
             var entry = await this.context.Set<T>().AddAsync(entity);
             await this.context.SaveChangesAsync();
 
@@ -130,6 +131,8 @@ namespace Data.Repository.Implementation
         /// </returns>
         public async Task<T> UpdateAsync(T entity)
         {
+            //TODO: handling dublicate
+            //TODO: handling notfound
             var dbEntity = await this.GetAsync(entity.Id);
             if (dbEntity == null)
             {
