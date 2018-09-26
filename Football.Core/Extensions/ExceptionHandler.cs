@@ -56,7 +56,7 @@ namespace Football.Core.Extensions
 
             var result = new
             {
-                Message = isDebug ? $"{baseException.Message}. StackTrace: {baseException.StackTrace} " : baseException.Message,
+                Message = baseException.Message,
                 Code = baseException.BaseExceptionCode
             };
 

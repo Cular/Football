@@ -53,11 +53,6 @@ namespace Football.Web.Controllers
         [ProducesResponseType(409)]
         public async Task<IActionResult> RegisterPlayer([FromBody] PlayerDtoCreate dtoCreate)
         {
-            if (await this.playerRepository.IsExist(dtoCreate.Alias, dtoCreate.Email))
-            {
-                return this.Conflict("Email or alias is registered!");
-            }
-
             var player = this.mapper.Map<Player>(dtoCreate);
             var result = await this.playerRepository.CreateAsync(player);
 

@@ -6,10 +6,12 @@ namespace Data.Repository.Implementation
 {
     using System;
     using System.Collections.Generic;
+    using System.Data.SqlClient;
     using System.Linq;
     using System.Threading.Tasks;
     using Data.DataBaseContext;
     using Data.Repository.Interfaces;
+    using Football.Core.Exceptions;
     using Microsoft.EntityFrameworkCore;
     using Models.Data;
 
@@ -47,11 +49,24 @@ namespace Data.Repository.Implementation
         /// </returns>
         public async Task<T> CreateAsync(T entity)
         {
-            //TODO: handling dublicate
-            var entry = await this.context.Set<T>().AddAsync(entity);
-            await this.context.SaveChangesAsync();
+            try
+            {
+                var entry = await this.context.Set<T>().AddAsync(entity);
+                await this.context.SaveChangesAsync();
 
-            return entry.Entity;
+                return entry.Entity;
+            }
+            catch (DbUpdateException ex)
+            {
+                switch ((ex.InnerException as SqlException).Number)
+                {
+                    case 2627:
+                        throw new DublicateException("Email or Alias is already registered.");
+
+                    default:
+                        throw ex;
+                }
+            }
         }
 
         /// <summary>
@@ -131,18 +146,30 @@ namespace Data.Repository.Implementation
         /// </returns>
         public async Task<T> UpdateAsync(T entity)
         {
-            //TODO: handling dublicate
-            //TODO: handling notfound
-            var dbEntity = await this.GetAsync(entity.Id);
-            if (dbEntity == null)
+            try
             {
-                return null;
+                var dbEntity = await this.GetAsync(entity.Id);
+                if (dbEntity == null)
+                {
+                    throw new NotFoundException($"Entity with Id {entity.Id} is not found.");
+                }
+
+                this.context.Entry(dbEntity).CurrentValues.SetValues(entity);
+                await this.context.SaveChangesAsync();
+
+                return dbEntity;
             }
+            catch (DbUpdateException ex)
+            {
+                switch ((ex.InnerException as SqlException).Number)
+                {
+                    case 2627:
+                        throw new DublicateException("Dublicate on update entity.");
 
-            this.context.Entry(dbEntity).CurrentValues.SetValues(entity);
-            await this.context.SaveChangesAsync();
-
-            return dbEntity;
+                    default:
+                        throw ex;
+                }
+            }
         }
     }
 }
