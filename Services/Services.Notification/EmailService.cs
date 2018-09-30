@@ -15,16 +15,15 @@ namespace Services.Notification
     /// <summary>
     /// Handle email sending to user.
     /// </summary>
-    /// <seealso cref="Services.Notification.INotificationService" />
     public class EmailService : INotificationService
     {
-        private readonly SmtpClient smtpClient;
+        private readonly ISmtpClient smtpClient;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EmailService"/> class.
         /// </summary>
         /// <param name="smtpClient">The smptClient</param>
-        public EmailService(SmtpClient smtpClient)
+        public EmailService(ISmtpClient smtpClient)
         {
             this.smtpClient = smtpClient ?? throw new ArgumentNullException(nameof(smtpClient));
         }

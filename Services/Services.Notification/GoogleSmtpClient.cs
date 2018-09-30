@@ -1,43 +1,50 @@
-﻿using Services.Notification.Intefraces;
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Mail;
-using System.Text;
+﻿// <copyright file="GoogleSmtpClient.cs" company="Yarik Home">
+// All rights maybe reserved. © Yarik
+// </copyright>
 
 namespace Services.Notification
 {
-    class GoogleSmtpClient : ISmtpClient, IDisposable
+    using System;
+    using System.Net;
+    using System.Net.Mail;
+    using System.Threading.Tasks;
+    using Services.Notification.Intefraces;
+
+    /// <summary>
+    /// The google smtp provider.
+    /// </summary>
+    /// <seealso cref="Services.Notification.Intefraces.ISmtpClient" />
+    /// <seealso cref="System.IDisposable" />
+    public class GoogleSmtpClient : ISmtpClient
     {
-        private readonly SmtpSettings _smtpSettings;
+        private readonly SmtpClient client;
 
-        public string Host { get; set; }
-        public int Port { get; set; }
-        public bool UseSsl { get; set; }
-        public NetworkCredential Credentials { get; set; }
-
-        private SmtpClient Client { get; set; }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GoogleSmtpClient"/> class.
+        /// </summary>
+        /// <param name="credentials">The credentials.</param>
+        /// <param name="ssl">if set to <c>true</c> [SSL].</param>
         public GoogleSmtpClient(NetworkCredential credentials, bool ssl)
         {
-            Port = ssl ? 587 : 25;
-            UseSsl = ssl;
-            Credentials = credentials;
-
-            Client = new SmtpClient(Host, Port);
-            Client.EnableSsl = true;
-            Client.Credentials = credentials;
+            this.client = new SmtpClient("smtp.google.com", ssl ? 587 : 25);
+            this.client.EnableSsl = ssl;
+            this.client.Credentials = credentials;
         }
 
+        /// <inheritdoc/>
         public void Dispose()
         {
-            Client.Dispose();
+            this.client.Dispose();
         }
 
-        // TODO: Нужен ли метод, возвращающий клиент? Ибо в тесте я должен передать клиент в класс
-        public SmtpClient GetClient()
+        /// <summary>
+        /// Sends the mail asynchronous.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <returns>Void result.</returns>
+        public Task SendMailAsync(MailMessage message)
         {
-            return this.Client;
+            return this.client.SendMailAsync(message);
         }
     }
 }
