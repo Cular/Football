@@ -27,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models.Notification", "Mode
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Notification", "Services\Services.Notification\Services.Notification.csproj", "{20FC9F14-C6D7-4923-B9E7-D6B9CDE2A2D5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services.Registration", "Services\Services.Registration\Services.Registration.csproj", "{635DC237-939B-421E-90E1-3485201FB028}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Registration", "Services\Services.Registration\Services.Registration.csproj", "{635DC237-939B-421E-90E1-3485201FB028}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

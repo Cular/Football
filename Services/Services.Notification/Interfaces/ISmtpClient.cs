@@ -7,12 +7,11 @@ using System.Threading.Tasks;
 
 namespace Services.Notification.Intefraces
 {
-    internal interface ISmtpClient
+    public interface ISmtpClient
     {
         string Host { get; }
-        int Port { get; set; }
-        bool UseSsl { get; set; }
-        NetworkCredential Credentials { get; set; }
-        SmtpClient Client { get; set; }
+        int Port { get; }
+        bool UseSsl { get; }
+        NetworkCredential Credentials { get; }
     }
 }
