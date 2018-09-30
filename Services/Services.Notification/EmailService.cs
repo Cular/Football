@@ -44,7 +44,7 @@ namespace Services.Notification
             mail.Subject = message.Title;
             mail.Body = message.Text;
 
-            return Task.CompletedTask;
+            return Task.CompletedTask; 
             //return this.smtpClient.SendMailAsync(mail);
         }
     }
