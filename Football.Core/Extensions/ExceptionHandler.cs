@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Football.Core.Exceptions;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,10 @@ namespace Football.Core.Extensions
             if (exception is AggregateException ae)
             {
                 return HandleExceptionAsync(ae.InnerException, response, isDebug);
+            }
+            if (exception is BaseException be)
+            {
+                return WriteExceptionAsync(be, response, isDebug);
             }
 
             return WriteExceptionAsync(exception, response, isDebug);
@@ -35,7 +40,26 @@ namespace Football.Core.Extensions
 
             response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-            var result = new { Error = isDebug ? $"{exception.Message}. StackTrace: {exception.StackTrace} " : exception.Message };
+            var result = new
+            {
+                Message = isDebug ? $"{exception.Message}. StackTrace: {exception.StackTrace} " : exception.Message
+            };
+
+            return response.WriteAsync(JsonConvert.SerializeObject(result));
+        }
+
+        private static Task WriteExceptionAsync(BaseException baseException, HttpResponse response, bool isDebug)
+        {
+            response.ContentType = "application/json";
+
+            response.StatusCode = (int)baseException.HttpStatusCode;
+
+            var result = new
+            {
+                Message = baseException.Message,
+                Code = baseException.BaseExceptionCode
+            };
+
             return response.WriteAsync(JsonConvert.SerializeObject(result));
         }
     }
