@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Services.Notification;
+using Services.Notification.Intefraces;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -12,17 +14,15 @@ namespace Football.Core.Extensions
     {
         public static void AddSmtpClient(this IServiceCollection services)
         {
-            services.AddScoped<SmtpClient>(sp =>
+            services.AddScoped<ISmtpClient>(sp =>
             {
-                var config = sp.GetRequiredService<IConfiguration>();
+                var configuration = sp.GetRequiredService<IConfiguration>();
+                var credentials = new NetworkCredential(configuration.GetValue<string>("GoogleSmtpOptions:MailLogin"), configuration.GetValue<string>("GoogleSmtpOptions:MailPassword"));
+                var enableSsl = configuration.GetValue<bool>("GoogleSmtpOptions:EnableSsl");
+                var host = configuration.GetValue<string>("GoogleSmtpOptions:Host");
+                var port = configuration.GetValue<int>("GoogleSmtpOptions:Port");
 
-                return new SmtpClient
-                {
-                    Host = config.GetValue<string>("SmtpOptions:Host"),
-                    Port = config.GetValue<int>("SmtpOptions:Port"),
-                    EnableSsl = config.GetValue<bool>("SmtpOptions:EnableSsl"),
-                    Credentials = new NetworkCredential(config.GetValue<string>("SmtpOptions:MailLogin"), config.GetValue<string>("SmtpOptions:MailPassword"))
-                };
+                return new GoogleSmtpClient(host, port, credentials, enableSsl);
             });
         }
     }
