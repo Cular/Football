@@ -4,7 +4,7 @@ using Data.Repository.Interfaces;
 using Football.Core.Extensions;
 using Models.Data;
 using Models.Notification;
-using Services.Notification;
+using Services.Notification.Intefraces;
 
 namespace Services.Registration
 {

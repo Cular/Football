@@ -2,7 +2,7 @@
 // All rights maybe reserved. © Yarik
 // </copyright>
 
-namespace Services.Notification
+namespace Services.Notification.Intefraces
 {
     using System;
     using System.Threading.Tasks;

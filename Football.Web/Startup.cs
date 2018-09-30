@@ -23,6 +23,7 @@ namespace Football.Web
     using Models.Mapper;
     using Models.Notification;
     using Services.Notification;
+    using Services.Notification.Intefraces;
     using Services.Registration;
     using Swashbuckle.AspNetCore.SwaggerGen;
 
