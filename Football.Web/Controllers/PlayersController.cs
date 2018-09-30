@@ -12,6 +12,7 @@ namespace Football.Web.Controllers
     using AutoMapper;
     using Data.Repository.Interfaces;
     using Football.Web.Validation;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Models.Data;
     using Models.Dto;
@@ -22,6 +23,7 @@ namespace Football.Web.Controllers
     /// <seealso cref="Microsoft.AspNetCore.Mvc.ControllerBase" />
     [Route("api/players")]
     [ApiController]
+    [Authorize]
     public class PlayersController : ControllerBase
     {
         private readonly IPlayerRepository playerRepository;

@@ -20,6 +20,8 @@ namespace Football.Web
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
+    using Models.Infrastructure;
     using Models.Mapper;
     using Models.Notification;
     using Services.Notification;
@@ -40,6 +42,7 @@ namespace Football.Web
             this.Configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .AddConfiguration(configuration)
+                .AddEnvironmentVariables()
                 .Build();
         }
 
@@ -79,11 +82,16 @@ namespace Football.Web
                 contextLifetime: ServiceLifetime.Scoped,
                 optionsLifetime: ServiceLifetime.Scoped);
 
-            services.AddSmtpClient();
+            // Data
             services.AddScoped<IPlayerRepository, PlayerRepository>();
             services.AddScoped<IPlayerActivationRepository, PlayerActivationRepository>();
+
+            // Services
+            services.AddSmtpClient();
             services.AddScoped<INotificationService, EmailService>();
             services.AddScoped<IRegisterNotifier, RegisterNotifier>();
+            services.Configure<TokenConfiguration>(this.Configuration.GetSection("TokenConfiguration"))
+                .AddSingleton<TokenConfiguration>(sp => sp.GetRequiredService<IOptions<TokenConfiguration>>().Value);
         }
 
         /// <summary>
@@ -106,6 +114,8 @@ namespace Football.Web
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Football API V1");
             });
+
+            app.UseAuthentication();
 
             app.UseMvc();
         }

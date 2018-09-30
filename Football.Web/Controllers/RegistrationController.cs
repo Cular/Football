@@ -10,6 +10,7 @@ namespace Football.Web.Controllers
     using System.Threading.Tasks;
     using AutoMapper;
     using Data.Repository.Interfaces;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Models.Data;
     using Models.Dto;
@@ -21,6 +22,7 @@ namespace Football.Web.Controllers
     /// <seealso cref="Microsoft.AspNetCore.Mvc.ControllerBase" />
     [Route("api/registration")]
     [ApiController]
+    [AllowAnonymous]
     public class RegistrationController : ControllerBase
     {
         private readonly IPlayerRepository playerRepository;

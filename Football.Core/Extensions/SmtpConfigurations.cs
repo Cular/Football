@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Football.Core.Extensions
 {
-    public static class ServicesConfigurationExtesions
+    public static class SmtpConfigurations
     {
         public static void AddSmtpClient(this IServiceCollection services)
         {
