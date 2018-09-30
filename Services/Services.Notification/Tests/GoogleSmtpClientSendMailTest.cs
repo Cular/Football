@@ -1,4 +1,5 @@
-﻿using Models.Notification;
+﻿using Microsoft.Extensions.Options;
+using Models.Notification;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -13,11 +14,12 @@ namespace Services.Notification.Tests
         private readonly GoogleSmtpClient _googleSmtpClient;
         private readonly EmailService _emailService;
 
+
         public GoogleSmtpClientSendMailTest()
         {
-            var credentials = new NetworkCredential("deepdlue25@gmail.com", "zzbrqzsckdqhyyro");
+            var credentials = new NetworkCredential("", "");
             this._googleSmtpClient = new GoogleSmtpClient(credentials, true);
-            var smtpClient = this._googleSmtpClient;
+            var smtpClient = this._googleSmtpClient.GetClient();
 
             // Как мне лучше достать клиент, чтобы передать его в твой класс.
             this._emailService = new EmailService(smtpClient);
@@ -26,7 +28,7 @@ namespace Services.Notification.Tests
         [Test]
         public void SendMail()
         {
-            var emailAdressToSend = "deepdlue25@gmail.com";
+            var emailAdressToSend = "email@gmail.com";
 
             var message = new Message()
             {
@@ -36,6 +38,8 @@ namespace Services.Notification.Tests
             };
 
             var email = this._emailService.Notify(message);
+
+
 
         }
     }

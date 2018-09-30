@@ -9,9 +9,9 @@ namespace Services.Notification
 {
     class GoogleSmtpClient : ISmtpClient, IDisposable
     {
-        private bool _disposed;
+        private readonly SmtpSettings _smtpSettings;
 
-        public string Host { get => "smtp.gmail.com"; }
+        public string Host { get; set; }
         public int Port { get; set; }
         public bool UseSsl { get; set; }
         public NetworkCredential Credentials { get; set; }
@@ -32,6 +32,12 @@ namespace Services.Notification
         public void Dispose()
         {
             Client.Dispose();
+        }
+
+        // TODO: Нужен ли метод, возвращающий клиент? Ибо в тесте я должен передать клиент в класс
+        public SmtpClient GetClient()
+        {
+            return this.Client;
         }
     }
 }
