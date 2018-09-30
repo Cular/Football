@@ -19,8 +19,10 @@ namespace Football.Services.SmtpTests
 
             var credentials = new NetworkCredential(configuration.GetValue<string>("GoogleSmtpOptions:MailLogin"), configuration.GetValue<string>("GoogleSmtpOptions:MailPassword"));
             var enableSsl = configuration.GetValue<bool>("GoogleSmtpOptions:EnableSsl");
+            var host = configuration.GetValue<string>("GoogleSmtpOptions:Host");
+            var port = configuration.GetValue<int>("GoogleSmtpOptions:Port");
 
-            var googleSmtpClient = new GoogleSmtpClient(credentials, true);
+            var googleSmtpClient = new GoogleSmtpClient(host, port, credentials, enableSsl);
             this._emailService = new EmailService(googleSmtpClient);
         }
 

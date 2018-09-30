@@ -22,11 +22,13 @@ namespace Services.Notification
         /// <summary>
         /// Initializes a new instance of the <see cref="GoogleSmtpClient"/> class.
         /// </summary>
+        /// <param name="host">The host for SMTP.</param>
+        /// <param name="port">The port.</param>
         /// <param name="credentials">The credentials.</param>
         /// <param name="ssl">if set to <c>true</c> [SSL].</param>
-        public GoogleSmtpClient(NetworkCredential credentials, bool ssl)
+        public GoogleSmtpClient(string host, int port, NetworkCredential credentials, bool ssl)
         {
-            this.client = new SmtpClient("smtp.google.com", ssl ? 587 : 25);
+            this.client = new SmtpClient(host, port);
             this.client.EnableSsl = ssl;
             this.client.Credentials = credentials;
         }

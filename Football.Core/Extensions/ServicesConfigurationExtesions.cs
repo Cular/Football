@@ -16,11 +16,13 @@ namespace Football.Core.Extensions
         {
             services.AddScoped<ISmtpClient>(sp =>
             {
-                var config = sp.GetRequiredService<IConfiguration>();
-                var credentials = new NetworkCredential(config.GetValue<string>("GoogleSmtpOptions:MailLogin"), config.GetValue<string>("GoogleSmtpOptions:MailPassword"));
-                var enableSsl = config.GetValue<bool>("GoogleSmtpOptions:EnableSsl");
+                var configuration = sp.GetRequiredService<IConfiguration>();
+                var credentials = new NetworkCredential(configuration.GetValue<string>("GoogleSmtpOptions:MailLogin"), configuration.GetValue<string>("GoogleSmtpOptions:MailPassword"));
+                var enableSsl = configuration.GetValue<bool>("GoogleSmtpOptions:EnableSsl");
+                var host = configuration.GetValue<string>("GoogleSmtpOptions:Host");
+                var port = configuration.GetValue<int>("GoogleSmtpOptions:Port");
 
-                return new GoogleSmtpClient(credentials, enableSsl);
+                return new GoogleSmtpClient(host, port, credentials, enableSsl);
             });
         }
     }
