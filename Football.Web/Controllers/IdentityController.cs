@@ -9,8 +9,10 @@ namespace Football.Web.Controllers
     using System.Linq;
     using System.Threading.Tasks;
     using Data.Repository.Interfaces;
+    using Football.Core.Extensions;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Models.Data;
     using Models.Dto;
     using Models.Infrastructure;
 
@@ -23,14 +25,20 @@ namespace Football.Web.Controllers
     public class IdentityController : ControllerBase
     {
         private readonly IPlayerRepository playerRepository;
+        private readonly IRefreshTokenRepository refreshTokenRepository;
+        private readonly TokenConfiguration configuration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IdentityController"/> class.
         /// </summary>
         /// <param name="playerRepository">The player repository.</param>
-        public IdentityController(IPlayerRepository playerRepository)
+        /// <param name="refreshTokenRepository">The refresh token repository.</param>
+        /// <param name="configuration">Token configuration.</param>
+        public IdentityController(IPlayerRepository playerRepository, IRefreshTokenRepository refreshTokenRepository, TokenConfiguration configuration)
         {
             this.playerRepository = playerRepository;
+            this.refreshTokenRepository = refreshTokenRepository;
+            this.configuration = configuration;
         }
 
         /// <summary>
@@ -44,11 +52,6 @@ namespace Football.Web.Controllers
         [HttpPost("password")]
         public async Task<IActionResult> Post([FromBody] PasswordTypeModel model)
         {
-            if (string.IsNullOrEmpty(model.Password) || string.IsNullOrEmpty(model.UserName))
-            {
-                return this.BadRequest("userName or password is empty!");
-            }
-
             var player = await this.playerRepository.GetAsync(model.UserName);
 
             if (player == null)
@@ -56,7 +59,36 @@ namespace Football.Web.Controllers
                 return this.NotFound();
             }
 
-            return this.Ok();
+            if (!player.Active)
+            {
+                return this.BadRequest("Player with requested Id is inactive.");
+            }
+
+            if (!string.Equals(player.PasswordHash, PasswordHasher.GetPasswordHash(model.Password), StringComparison.InvariantCulture))
+            {
+                return this.BadRequest("userName or password is invalid!");
+            }
+
+            var token = JwtAuthorization.GenerateToken(player, this.configuration);
+            var refresh = JwtAuthorization.GenerateRefreshToken(player, this.configuration);
+
+            await this.refreshTokenRepository.RevokeUsersTokensAsync(player.Id);
+            await this.refreshTokenRepository.CreateAsync(new RefreshToken
+            {
+                Id = refresh.refreshTokenKey,
+                Active = true,
+                Token = refresh.refreshTokenValue,
+                UserId = player.Id
+            });
+
+            var result = new TokenModel
+            {
+                Token = token,
+                RefreshToken = refresh.refreshTokenKey,
+                Expiration = (int)this.configuration.Expiration.TotalSeconds
+            };
+
+            return this.Ok(result);
         }
     }
 }

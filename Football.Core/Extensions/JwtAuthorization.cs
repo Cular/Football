@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Models.Data;
 using Models.Infrastructure;
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,7 +27,7 @@ namespace Football.Core.Extensions
                 ValidateIssuer = true,
                 ValidIssuer = configuration.Issuer,
 
-                ValidateAudience = false,
+                ValidateAudience = true,
                 ValidAudience = configuration.Audience,
 
                 ValidateLifetime = true,
@@ -64,9 +65,37 @@ namespace Football.Core.Extensions
             return services;
         }
 
-        ////public static TokenModel GenerateToken(this Player player)
-        ////{
+        public static(string refreshTokenKey, string refreshTokenValue) GenerateRefreshToken(this Player player, TokenConfiguration configuration)
+        {
+            var key = Guid.NewGuid().ToString("N");
 
-        ////}
+            var token = new JwtSecurityToken(
+                issuer: configuration.Issuer,
+                audience: configuration.Audience,
+                expires: DateTime.UtcNow.Add(configuration.Expiration),
+                signingCredentials: GetCredentials(configuration.Key)
+                );
+
+            return (key, new JwtSecurityTokenHandler().WriteToken(token));
+        }
+
+        public static string GenerateToken(this Player player, TokenConfiguration configuration)
+        {
+            var token = new JwtSecurityToken(
+                issuer: configuration.Issuer,
+                audience: configuration.Audience,
+                expires: DateTime.UtcNow.Add(configuration.Expiration),
+                signingCredentials: GetCredentials(configuration.Key)
+                );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        private static SigningCredentials GetCredentials(string asymetricKey)
+        {
+            var bytes = Encoding.ASCII.GetBytes(asymetricKey);
+            var key = new SymmetricSecurityKey(bytes);
+            return new SigningCredentials(key, SecurityAlgorithms.RsaSha256);
+        }
     }
 }

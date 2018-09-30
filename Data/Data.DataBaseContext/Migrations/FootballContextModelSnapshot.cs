@@ -93,14 +93,14 @@ namespace Data.DataBaseContext.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnName("userId");
+                        .HasColumnName("userid");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Token")
                         .IsUnique();
 
-                    b.ToTable("RefreshTokens");
+                    b.ToTable("refreshtokens");
                 });
 
             modelBuilder.Entity("Models.Data.Game", b =>
@@ -114,8 +114,8 @@ namespace Data.DataBaseContext.Migrations
             modelBuilder.Entity("Models.Data.PlayerActivation", b =>
                 {
                     b.HasOne("Models.Data.Player", "Player")
-                        .WithMany()
-                        .HasForeignKey("PlayerId")
+                        .WithOne()
+                        .HasForeignKey("Models.Data.PlayerActivation", "PlayerId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

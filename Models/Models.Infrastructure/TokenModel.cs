@@ -28,11 +28,11 @@ namespace Models.Infrastructure
         public string RefreshToken { get; set; }
 
         /// <summary>
-        /// Gets or sets the expiration date.
+        /// Gets or sets the expiration date. In seconds.
         /// </summary>
         /// <value>
         /// The expiration date.
         /// </value>
-        public DateTimeOffset ExpirationDate { get; set; }
+        public int Expiration { get; set; }
     }
 }

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.DataBaseContext.Migrations
 {
     [DbContext(typeof(FootballContext))]
-    [Migration("20180930124617_ADD_RefreshToken")]
-    partial class ADD_RefreshToken
+    [Migration("20180930190419_ADD_RefreshToken_Fix_PlayerActivation")]
+    partial class ADD_RefreshToken_Fix_PlayerActivation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -95,14 +95,14 @@ namespace Data.DataBaseContext.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnName("userId");
+                        .HasColumnName("userid");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Token")
                         .IsUnique();
 
-                    b.ToTable("RefreshTokens");
+                    b.ToTable("refreshtokens");
                 });
 
             modelBuilder.Entity("Models.Data.Game", b =>
@@ -116,8 +116,8 @@ namespace Data.DataBaseContext.Migrations
             modelBuilder.Entity("Models.Data.PlayerActivation", b =>
                 {
                     b.HasOne("Models.Data.Player", "Player")
-                        .WithMany()
-                        .HasForeignKey("PlayerId")
+                        .WithOne()
+                        .HasForeignKey("Models.Data.PlayerActivation", "PlayerId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

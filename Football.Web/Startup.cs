@@ -44,6 +44,8 @@ namespace Football.Web
                 .AddConfiguration(configuration)
                 .AddEnvironmentVariables()
                 .Build();
+
+            this.TokenConfiguration = this.Configuration.GetSection("TokenConfiguration").Get<TokenConfiguration>();
         }
 
         /// <summary>
@@ -53,6 +55,14 @@ namespace Football.Web
         /// The configuration.
         /// </value>
         public IConfiguration Configuration { get; }
+
+        /// <summary>
+        /// Gets the token configuration.
+        /// </summary>
+        /// <value>
+        /// The token configuration.
+        /// </value>
+        private TokenConfiguration TokenConfiguration { get; }
 
         /// <summary>
         /// This method gets called by the runtime. Use this method to add services to the container.
@@ -77,6 +87,7 @@ namespace Football.Web
             services.AddDbContext<FootballContext>(
                 opt =>
                 {
+                    opt.UseLazyLoadingProxies();
                     opt.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
                 },
                 contextLifetime: ServiceLifetime.Scoped,
@@ -85,13 +96,14 @@ namespace Football.Web
             // Data
             services.AddScoped<IPlayerRepository, PlayerRepository>();
             services.AddScoped<IPlayerActivationRepository, PlayerActivationRepository>();
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
             // Services
+            services.AddTokenConfiguration(this.TokenConfiguration);
             services.AddSmtpClient();
             services.AddScoped<INotificationService, EmailService>();
             services.AddScoped<IRegisterNotifier, RegisterNotifier>();
-            services.Configure<TokenConfiguration>(this.Configuration.GetSection("TokenConfiguration"))
-                .AddSingleton<TokenConfiguration>(sp => sp.GetRequiredService<IOptions<TokenConfiguration>>().Value);
+            services.AddSingleton(this.TokenConfiguration);
         }
 
         /// <summary>

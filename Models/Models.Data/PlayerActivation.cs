@@ -32,6 +32,6 @@ namespace Models.Data
         /// <value>
         /// The player.
         /// </value>
-        public Player Player { get; set; }
+        public virtual Player Player { get; set; }
     }
 }

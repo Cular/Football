@@ -2,27 +2,27 @@
 
 namespace Data.DataBaseContext.Migrations
 {
-    public partial class ADD_RefreshToken : Migration
+    public partial class ADD_RefreshToken_Fix_PlayerActivation : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "RefreshTokens",
+                name: "refreshtokens",
                 columns: table => new
                 {
                     id = table.Column<string>(nullable: false),
-                    userId = table.Column<string>(nullable: false),
+                    userid = table.Column<string>(nullable: false),
                     token = table.Column<string>(nullable: false),
                     active = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RefreshTokens", x => x.id);
+                    table.PrimaryKey("PK_refreshtokens", x => x.id);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_RefreshTokens_token",
-                table: "RefreshTokens",
+                name: "IX_refreshtokens_token",
+                table: "refreshtokens",
                 column: "token",
                 unique: true);
         }
@@ -30,7 +30,7 @@ namespace Data.DataBaseContext.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "RefreshTokens");
+                name: "refreshtokens");
         }
     }
 }

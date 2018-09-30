@@ -6,6 +6,7 @@ namespace Models.Dto
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.Text;
 
     /// <summary>
@@ -19,6 +20,8 @@ namespace Models.Dto
         /// <value>
         /// The name of the user.
         /// </value>
+        [MinLength(4, ErrorMessage = "Minimal length equals 4.")]
+        [MaxLength(12, ErrorMessage = "Maximal lenght equals 12.")]
         public string UserName { get; set; }
 
         /// <summary>
@@ -27,6 +30,8 @@ namespace Models.Dto
         /// <value>
         /// The password.
         /// </value>
+        [MinLength(5, ErrorMessage = "Minimal length equals 5.")]
+        [MaxLength(12, ErrorMessage = "Maximal lenght equals 12.")]
         public string Password { get; set; }
     }
 }

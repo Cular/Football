@@ -17,7 +17,7 @@ namespace Models.Infrastructure
         /// <value>
         /// The path.
         /// </value>
-        public string Path { get; protected set; }
+        public string Path { get; set; }
 
         /// <summary>
         /// Gets or sets the key.
@@ -25,7 +25,7 @@ namespace Models.Infrastructure
         /// <value>
         /// The key.
         /// </value>
-        public string Key { get; protected set; }
+        public string Key { get; set; }
 
         /// <summary>
         /// Gets or sets the issuer.
@@ -33,7 +33,7 @@ namespace Models.Infrastructure
         /// <value>
         /// The issuer.
         /// </value>
-        public string Issuer { get; protected set; }
+        public string Issuer { get; set; }
 
         /// <summary>
         /// Gets or sets the audience.
@@ -41,7 +41,7 @@ namespace Models.Infrastructure
         /// <value>
         /// The audience.
         /// </value>
-        public string Audience { get; protected set; }
+        public string Audience { get; set; }
 
         /// <summary>
         /// Gets or sets the expiration.
@@ -49,7 +49,7 @@ namespace Models.Infrastructure
         /// <value>
         /// The expiration.
         /// </value>
-        public TimeSpan Expiration { get; protected set; }
+        public TimeSpan Expiration { get; set; }
 
         /// <summary>
         /// Gets or sets the refresh expiration.
@@ -57,6 +57,6 @@ namespace Models.Infrastructure
         /// <value>
         /// The refresh expiration.
         /// </value>
-        public TimeSpan RefreshExpiration { get; protected set; }
+        public TimeSpan RefreshExpiration { get; set; }
     }
 }

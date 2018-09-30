@@ -14,6 +14,7 @@ namespace Models.Data
     /// <summary>
     /// The refresh token entity
     /// </summary>
+    [Table("refreshtokens")]
     public class RefreshToken : Entity<string>
     {
         /// <summary>
@@ -23,7 +24,7 @@ namespace Models.Data
         /// The user identifier.
         /// </value>
         [Required]
-        [Column("userId")]
+        [Column("userid")]
         public string UserId { get; set; }
 
         /// <summary>
