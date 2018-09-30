@@ -10,6 +10,7 @@ namespace Services.Notification
     using System.Text;
     using System.Threading.Tasks;
     using Models.Notification;
+    using Services.Notification.Intefraces;
 
     /// <summary>
     /// Handle email sending to user.
