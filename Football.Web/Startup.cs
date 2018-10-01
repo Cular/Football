@@ -5,6 +5,7 @@
 namespace Football.Web
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using AutoMapper;
     using Data.DataBaseContext;
@@ -24,9 +25,11 @@ namespace Football.Web
     using Models.Infrastructure;
     using Models.Mapper;
     using Models.Notification;
+    using Services.Identity;
     using Services.Notification;
     using Services.Notification.Intefraces;
     using Services.Registration;
+    using Swashbuckle.AspNetCore.Swagger;
     using Swashbuckle.AspNetCore.SwaggerGen;
 
     /// <summary>
@@ -81,7 +84,19 @@ namespace Football.Web
 
             services.AddSwaggerGen(x =>
             {
-                x.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info { Version = "v1", Title = "Football API" });
+                x.SwaggerDoc("v1", new Info { Version = "v1", Title = "Football API" });
+
+                var oauthScheme = new OAuth2Scheme
+                {
+                    Description =
+                        "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    TokenUrl = "/token",
+                    Flow = "password"
+                };
+
+                x.AddSecurityDefinition("oauth2", oauthScheme);
+                x.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>> { { "oauth2", new string[] { } } });
+
                 IncludeComments(x);
             });
 
@@ -105,6 +120,7 @@ namespace Football.Web
             services.AddScoped<INotificationService, EmailService>();
             services.AddScoped<IRegisterNotifier, RegisterNotifier>();
             services.AddSingleton(this.TokenConfiguration);
+            services.AddScoped<IIdentityService, IdentityService>();
         }
 
         /// <summary>

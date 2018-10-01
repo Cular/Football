@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Football.Core.Authorization.Claims;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
@@ -6,6 +7,7 @@ using Models.Data;
 using Models.Infrastructure;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -65,7 +67,7 @@ namespace Football.Core.Extensions
             return services;
         }
 
-        public static(string refreshTokenKey, string refreshTokenValue) GenerateRefreshToken(this Player player, TokenConfiguration configuration)
+        public static(string refreshTokenKey, string refreshTokenValue) GenerateRefreshToken(TokenConfiguration configuration)
         {
             var key = Guid.NewGuid().ToString("N");
 
@@ -79,13 +81,14 @@ namespace Football.Core.Extensions
             return (key, new JwtSecurityTokenHandler().WriteToken(token));
         }
 
-        public static string GenerateToken(this Player player, TokenConfiguration configuration)
+        public static string GenerateToken(Player player, TokenConfiguration configuration)
         {
             var token = new JwtSecurityToken(
                 issuer: configuration.Issuer,
                 audience: configuration.Audience,
                 expires: DateTime.UtcNow.Add(configuration.Expiration),
-                signingCredentials: GetCredentials(configuration.Key)
+                signingCredentials: GetCredentials(configuration.Key),
+                claims: player.GetClaims()
                 );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
@@ -95,7 +98,12 @@ namespace Football.Core.Extensions
         {
             var bytes = Encoding.ASCII.GetBytes(asymetricKey);
             var key = new SymmetricSecurityKey(bytes);
-            return new SigningCredentials(key, SecurityAlgorithms.RsaSha256);
+            return new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
+        }
+
+        private static Claim[] GetClaims(this Player player)
+        {
+            return new Claim[] { new Claim(FootballClaims.PlayerAlias, player.Id)};
         }
     }
 }

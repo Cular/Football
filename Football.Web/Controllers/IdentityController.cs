@@ -5,16 +5,13 @@
 namespace Football.Web.Controllers
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
-    using Data.Repository.Interfaces;
     using Football.Core.Extensions;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Models.Data;
     using Models.Dto;
-    using Models.Infrastructure;
+    using Services.Identity;
 
     /// <summary>
     /// The token controller. For authenticate users.
@@ -24,71 +21,53 @@ namespace Football.Web.Controllers
     [AllowAnonymous]
     public class IdentityController : ControllerBase
     {
-        private readonly IPlayerRepository playerRepository;
-        private readonly IRefreshTokenRepository refreshTokenRepository;
-        private readonly TokenConfiguration configuration;
+        private readonly IIdentityService identity;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IdentityController"/> class.
         /// </summary>
-        /// <param name="playerRepository">The player repository.</param>
-        /// <param name="refreshTokenRepository">The refresh token repository.</param>
-        /// <param name="configuration">Token configuration.</param>
-        public IdentityController(IPlayerRepository playerRepository, IRefreshTokenRepository refreshTokenRepository, TokenConfiguration configuration)
+        /// <param name="identity">The identity service.</param>
+        public IdentityController(IIdentityService identity)
         {
-            this.playerRepository = playerRepository;
-            this.refreshTokenRepository = refreshTokenRepository;
-            this.configuration = configuration;
+            this.identity = identity;
         }
 
         /// <summary>
-        /// Posts the specified model.
+        /// Generates token by users form data.
         /// </summary>
-        /// <param name="model">The model.</param>
-        /// <returns>Token model.</returns>
-        [ProducesResponseType(400)]
-        [ProducesResponseType(200, Type = typeof(TokenModel))]
-        [ProducesResponseType(404)]
-        [HttpPost("password")]
-        public async Task<IActionResult> Post([FromBody] PasswordTypeModel model)
+        /// <returns>Token</returns>
+        [HttpPost]
+        public async Task<IActionResult> Post()
         {
-            var player = await this.playerRepository.GetAsync(model.UserName);
-
-            if (player == null)
+            if (!this.HttpContext.Request.Form.TryGetValue("grant_type", out var grantType))
             {
-                return this.NotFound();
+                return this.BadRequest("Request does not contains grant_type parameter.");
             }
 
-            if (!player.Active)
+            if (grantType == "password" && this.HttpContext.Request.Form.TryGetValue("username", out var username)
+                && this.HttpContext.Request.Form.TryGetValue("password", out var password))
             {
-                return this.BadRequest("Player with requested Id is inactive.");
+                var reponse = await this.identity.GetTokenAsync(username, password);
+                return this.Ok(new
+                {
+                    access_token = reponse.access,
+                    refreshToken = reponse.refresh,
+                    expires_in = reponse.expiration
+                });
             }
 
-            if (!string.Equals(player.PasswordHash, PasswordHasher.GetPasswordHash(model.Password), StringComparison.InvariantCulture))
+            if (grantType == "refreshtoken" && this.HttpContext.Request.Form.TryGetValue("refresh_token", out var refresh))
             {
-                return this.BadRequest("userName or password is invalid!");
+                var reponse = await this.identity.GetTokenAsync(refresh);
+                return this.Ok(new
+                {
+                    access_token = reponse.access,
+                    refreshToken = reponse.refresh,
+                    expires_in = reponse.expiration
+                });
             }
 
-            var token = JwtAuthorization.GenerateToken(player, this.configuration);
-            var refresh = JwtAuthorization.GenerateRefreshToken(player, this.configuration);
-
-            await this.refreshTokenRepository.RevokeUsersTokensAsync(player.Id);
-            await this.refreshTokenRepository.CreateAsync(new RefreshToken
-            {
-                Id = refresh.refreshTokenKey,
-                Active = true,
-                Token = refresh.refreshTokenValue,
-                UserId = player.Id
-            });
-
-            var result = new TokenModel
-            {
-                Token = token,
-                RefreshToken = refresh.refreshTokenKey,
-                Expiration = (int)this.configuration.Expiration.TotalSeconds
-            };
-
-            return this.Ok(result);
+            return this.BadRequest("Wrong grant_type parameter or user parameters for recognizing.");
         }
     }
 }

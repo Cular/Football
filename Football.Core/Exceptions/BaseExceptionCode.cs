@@ -8,6 +8,8 @@ namespace Football.Core.Exceptions
     {
         Undefined,
         NotFound,
-        Dublicate
+        Dublicate,
+        TokenExpired,
+        TokenInactive
     }
 }
