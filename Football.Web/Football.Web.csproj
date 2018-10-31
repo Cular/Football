@@ -26,6 +26,8 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="2.1.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
@@ -36,8 +38,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Data\Data.Repository\Data.Repository.csproj" />
     <ProjectReference Include="..\Models\Models.Dto\Models.Dto.csproj" />
+    <ProjectReference Include="..\Models\Models.Infrastructure\Models.Infrastructure.csproj" />
     <ProjectReference Include="..\Models\Models.Mapper\Models.Mapper.csproj" />
     <ProjectReference Include="..\Models\Models.Notification\Models.Notification.csproj" />
+    <ProjectReference Include="..\Services\Services.Identity\Services.Identity.csproj" />
     <ProjectReference Include="..\Services\Services.Notification\Services.Notification.csproj" />
     <ProjectReference Include="..\Services\Services.Registration\Services.Registration.csproj" />
   </ItemGroup>

@@ -12,7 +12,7 @@ namespace Football.Core.Extensions
         static PasswordHasher()
         {
             var configs = new ConfigurationBuilder()
-                .AddJsonFile("settings.json")
+                .AddJsonFile("appsettings.json")
                 .Build();
 
             salt = Encoding.UTF8.GetBytes(configs["PasswordSalt"]);

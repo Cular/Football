@@ -8,7 +8,7 @@ namespace Data.DataBaseContext
     {
         public FootballContext(DbContextOptions opts) : base(opts)
         {
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
             //Database.Migrate();
         }
 
@@ -17,6 +17,7 @@ namespace Data.DataBaseContext
             modelBuilder.ApplyConfiguration(new PlayerMap());
             modelBuilder.ApplyConfiguration(new GameMap());
             modelBuilder.ApplyConfiguration(new PlayerActivationMap());
+            modelBuilder.ApplyConfiguration(new RefreshTokenMap());
 
             base.OnModelCreating(modelBuilder);
         }
@@ -24,5 +25,6 @@ namespace Data.DataBaseContext
         public DbSet<Game> Games { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<PlayerActivation> PlayerActivations { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
     }
 }

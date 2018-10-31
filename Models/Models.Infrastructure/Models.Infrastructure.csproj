@@ -6,13 +6,13 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>bin\x64\Debug\netcoreapp2.1\Services.Notification.xml</DocumentationFile>
     <PlatformTarget>x64</PlatformTarget>
+    <DocumentationFile>bin\x64\Debug\netcoreapp2.1\Models.Dto.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <DocumentationFile>bin\x64\Debug\netcoreapp2.1\Services.Notification.xml</DocumentationFile>
     <PlatformTarget>x64</PlatformTarget>
+    <DocumentationFile>bin\x64\Debug\netcoreapp2.1\Models.Dto.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,10 +30,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\Models\Models.Notification\Models.Notification.csproj" />
   </ItemGroup>
 
 </Project>

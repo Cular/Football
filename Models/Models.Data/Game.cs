@@ -30,6 +30,6 @@ namespace Models.Data
         /// <value>
         /// The admin.
         /// </value>
-        public Player Admin { get; set; }
+        public virtual Player Admin { get; set; }
     }
 }

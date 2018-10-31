@@ -5,6 +5,7 @@
 namespace Football.Web
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using AutoMapper;
     using Data.DataBaseContext;
@@ -20,11 +21,15 @@ namespace Football.Web
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
+    using Models.Infrastructure;
     using Models.Mapper;
     using Models.Notification;
+    using Services.Identity;
     using Services.Notification;
     using Services.Notification.Intefraces;
     using Services.Registration;
+    using Swashbuckle.AspNetCore.Swagger;
     using Swashbuckle.AspNetCore.SwaggerGen;
 
     /// <summary>
@@ -41,7 +46,10 @@ namespace Football.Web
             this.Configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .AddConfiguration(configuration)
+                .AddEnvironmentVariables()
                 .Build();
+
+            this.TokenConfiguration = this.Configuration.GetSection("TokenConfiguration").Get<TokenConfiguration>();
         }
 
         /// <summary>
@@ -51,6 +59,14 @@ namespace Football.Web
         /// The configuration.
         /// </value>
         public IConfiguration Configuration { get; }
+
+        /// <summary>
+        /// Gets the token configuration.
+        /// </summary>
+        /// <value>
+        /// The token configuration.
+        /// </value>
+        private TokenConfiguration TokenConfiguration { get; }
 
         /// <summary>
         /// This method gets called by the runtime. Use this method to add services to the container.
@@ -68,23 +84,43 @@ namespace Football.Web
 
             services.AddSwaggerGen(x =>
             {
-                x.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info { Version = "v1", Title = "Football API" });
+                x.SwaggerDoc("v1", new Info { Version = "v1", Title = "Football API" });
+
+                var oauthScheme = new OAuth2Scheme
+                {
+                    Description =
+                        "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    TokenUrl = "/token",
+                    Flow = "password"
+                };
+
+                x.AddSecurityDefinition("oauth2", oauthScheme);
+                x.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>> { { "oauth2", new string[] { } } });
+
                 IncludeComments(x);
             });
 
             services.AddDbContext<FootballContext>(
                 opt =>
                 {
+                    opt.UseLazyLoadingProxies();
                     opt.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
                 },
                 contextLifetime: ServiceLifetime.Scoped,
                 optionsLifetime: ServiceLifetime.Scoped);
 
-            services.AddSmtpClient();
+            // Data
             services.AddScoped<IPlayerRepository, PlayerRepository>();
             services.AddScoped<IPlayerActivationRepository, PlayerActivationRepository>();
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+
+            // Services
+            services.AddTokenConfiguration(this.TokenConfiguration);
+            services.AddSmtpClient();
             services.AddScoped<INotificationService, EmailService>();
             services.AddScoped<IRegisterNotifier, RegisterNotifier>();
+            services.AddSingleton(this.TokenConfiguration);
+            services.AddScoped<IIdentityService, IdentityService>();
         }
 
         /// <summary>
@@ -107,6 +143,8 @@ namespace Football.Web
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Football API V1");
             });
+
+            app.UseAuthentication();
 
             app.UseMvc();
         }
