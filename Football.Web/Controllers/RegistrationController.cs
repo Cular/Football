@@ -5,8 +5,6 @@
 namespace Football.Web.Controllers
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
     using Data.Repository.Interfaces;
@@ -55,11 +53,11 @@ namespace Football.Web.Controllers
         [ProducesResponseType(409)]
         public async Task<IActionResult> RegisterPlayer([FromBody] PlayerDtoCreate dtoCreate)
         {
+            // TODO: Change work with Facebook auth.
             var player = this.mapper.Map<Player>(dtoCreate);
             var result = await this.playerRepository.CreateAsync(player);
 
-            await this.notifier.SendRegisterInfo(result);
-
+            // await this.notifier.SendRegisterInfo(result);
             return this.Ok();
         }
 

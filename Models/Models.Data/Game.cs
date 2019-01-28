@@ -5,9 +5,8 @@
 namespace Models.Data
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Text;
+    using Models.Data.GameState;
 
     /// <summary>
     /// The event for players.
@@ -31,5 +30,11 @@ namespace Models.Data
         /// The admin.
         /// </value>
         public virtual Player Admin { get; set; }
+
+        /// <summary>
+        /// Gets or sets state of game.
+        /// </summary>
+        [Column("state")]
+        public State State { get; set; }
     }
 }

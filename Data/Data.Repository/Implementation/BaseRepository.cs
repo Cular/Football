@@ -118,10 +118,10 @@ namespace Data.Repository.Implementation
         /// </summary>
         /// <param name="predicate">The predicate.</param>
         /// <returns>The list of entities.</returns>
-        public async Task<List<T>> GetAllAsync(Func<T, bool> predicate)
+        public Task<List<T>> GetAllAsync(Func<T, bool> predicate)
         {
-            var result = await (this.context.Set<T>().Where(predicate) as IQueryable<T>).ToListAsync();
-            return result;
+            ////var result = await (this.context.Set<T>().Where(predicate) as IQueryable<T>).ToListAsync();
+            return Task.FromResult(this.context.Set<T>().Where(predicate).ToList());
         }
 
         /// <summary>
