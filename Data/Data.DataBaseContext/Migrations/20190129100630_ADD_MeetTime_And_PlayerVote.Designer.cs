@@ -4,42 +4,22 @@ using Data.DataBaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data.DataBaseContext.Migrations
 {
     [DbContext(typeof(FootballContext))]
-    partial class FootballContextModelSnapshot : ModelSnapshot
+    [Migration("20190129100630_ADD_MeetTime_And_PlayerVote")]
+    partial class ADD_MeetTime_And_PlayerVote
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.2.1-servicing-10028")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("Models.Data.Friendship", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("id");
-
-                    b.Property<string>("FriendId")
-                        .HasColumnName("friendid");
-
-                    b.Property<string>("PlayerId")
-                        .IsRequired()
-                        .HasColumnName("playerid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FriendId");
-
-                    b.HasIndex("PlayerId");
-
-                    b.ToTable("friendships");
-                });
 
             modelBuilder.Entity("Models.Data.Game", b =>
                 {
@@ -180,18 +160,6 @@ namespace Data.DataBaseContext.Migrations
                         .IsUnique();
 
                     b.ToTable("refreshtokens");
-                });
-
-            modelBuilder.Entity("Models.Data.Friendship", b =>
-                {
-                    b.HasOne("Models.Data.Player", "Friend")
-                        .WithMany()
-                        .HasForeignKey("FriendId");
-
-                    b.HasOne("Models.Data.Player", "Player")
-                        .WithMany()
-                        .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Models.Data.Game", b =>

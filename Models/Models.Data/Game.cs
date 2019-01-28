@@ -5,6 +5,7 @@
 namespace Models.Data
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations.Schema;
     using Models.Data.GameState;
 
@@ -36,5 +37,15 @@ namespace Models.Data
         /// </summary>
         [Column("state")]
         public State State { get; set; }
+
+        /// <summary>
+        /// Gets or sets lift of players in game.
+        /// </summary>
+        public virtual List<PlayerGame> PlayerGames { get; set; }
+
+        /// <summary>
+        /// Gets or sets list of time variants.
+        /// </summary>
+        public virtual List<MeetingTime> MeetingTimes { get; set; }
     }
 }

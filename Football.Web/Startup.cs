@@ -115,6 +115,8 @@ namespace Football.Web
             services.AddScoped<IPlayerActivationRepository, PlayerActivationRepository>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddScoped<IGameRepository, GameRepository>();
+            services.AddScoped<IMeetingTimeRepository, MeetingTimeRepository>();
+            services.AddScoped<IFriendshipRepository, FriendshipRepository>();
 
             // Services
             services.AddTokenConfiguration(this.TokenConfiguration);
