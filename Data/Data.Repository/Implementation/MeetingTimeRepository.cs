@@ -17,8 +17,6 @@ namespace Data.Repository.Implementation
     /// </summary>
     public class MeetingTimeRepository : BaseRepository<MeetingTime, Guid>, IMeetingTimeRepository
     {
-        private readonly DbSet<MeetingTime> meetingTimes;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="MeetingTimeRepository"/> class.
         /// </summary>
@@ -26,7 +24,6 @@ namespace Data.Repository.Implementation
         public MeetingTimeRepository(FootballContext context)
             : base(context)
         {
-            this.meetingTimes = context.MeetingTimes;
         }
     }
 }

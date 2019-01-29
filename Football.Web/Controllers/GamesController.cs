@@ -49,7 +49,7 @@ namespace Football.Web.Controllers
         public async Task<IActionResult> CreateGame([FromBody]GameCreateDto dto)
         {
             var entity = this.mapper.Map<Game>(dto);
-            entity.AdminId = this.User.Identity.Name ?? throw new UnauthorizedAccessException();
+            entity.AdminId = this.User.Identity.Name;
 
             await this.gameService.CreateAsync(entity);
 

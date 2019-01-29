@@ -17,8 +17,6 @@ namespace Data.Repository.Implementation
     /// </summary>
     public class GameRepository : BaseRepository<Game, Guid>, IGameRepository
     {
-        private readonly DbSet<Game> games;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="GameRepository"/> class.
         /// </summary>
@@ -26,7 +24,6 @@ namespace Data.Repository.Implementation
         public GameRepository(FootballContext context)
             : base(context)
         {
-            this.games = context.Games;
         }
     }
 }

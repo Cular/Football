@@ -44,10 +44,5 @@ namespace Models.Data
         /// Gets or sets the games of player
         /// </summary>
         public List<PlayerGame> PlayerGames { get; set; }
-
-        /////// <summary>
-        /////// Gets or sets the friendships.
-        /////// </summary>
-        ////public List<Friendship> Friendships { get; set; }
     }
 }

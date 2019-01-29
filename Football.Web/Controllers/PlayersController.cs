@@ -5,17 +5,11 @@
 namespace Football.Web.Controllers
 {
     using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
-    using Data.Repository.Interfaces;
-    using Football.Web.Validation;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using Models.Data;
-    using Models.Dto;
+    using Services.Players;
 
     /// <summary>
     /// The players endpoint.
@@ -26,39 +20,56 @@ namespace Football.Web.Controllers
     [Authorize]
     public class PlayersController : ControllerBase
     {
-        private readonly IPlayerRepository playerRepository;
+        private readonly IPlayerService playerService;
         private readonly IMapper mapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PlayersController"/> class.
         /// </summary>
-        /// <param name="playerRepository">The player repository.</param>
+        /// <param name="playerService">The player repository.</param>
         /// <param name="mapper">The mapper.</param>
         /// <exception cref="ArgumentNullException">playerRepository</exception>
-        public PlayersController(IPlayerRepository playerRepository, IMapper mapper)
+        public PlayersController(IPlayerService playerService, IMapper mapper)
         {
-            this.playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
+            this.playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         /// <summary>
-        /// Gets the player.
+        /// Requests the friend.
         /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns>The player or null.</returns>
-        [HttpGet]
-        [Route("{id}")]
-        [ProducesResponseType(200, Type = typeof(PlayerDto))]
+        /// <param name="friendid">The friendid.</param>
+        /// <returns>The action result.</returns>
+        [HttpPut]
+        [Route("friend/request/{friendid}")]
+        [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> GetPlayer([FromRoute]string id)
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> RequestFriend([FromRoute] string friendid)
         {
-            var result = await this.playerRepository.GetPlayerByAlias(id);
-            if (result != null)
+            if (string.IsNullOrEmpty(friendid))
             {
-                return this.Ok(this.mapper.Map<PlayerDto>(result));
+                return this.BadRequest($"friendid shoud not be empty.");
             }
 
-            return this.NotFound();
+            await this.playerService.RequestFriendshipAsync(this.User.Identity.Name, friendid);
+
+            return this.Ok();
+        }
+
+        [HttpPut]
+        [Route("friend/approve/{friendshipId}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> ApproveFriend([FromRoute]Guid friendshipId)
+        {
+            if (friendshipId == Guid.Empty)
+            {
+                return this.BadRequest($"friendshipId shoud not be empty.");
+            }
+
+            await this.playerService.
         }
     }
 }

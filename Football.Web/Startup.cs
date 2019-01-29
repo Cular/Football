@@ -29,6 +29,7 @@ namespace Football.Web
     using Services.Identity;
     using Services.Notification;
     using Services.Notification.Intefraces;
+    using Services.Players;
     using Services.Registration;
     using Swashbuckle.AspNetCore.Swagger;
     using Swashbuckle.AspNetCore.SwaggerGen;
@@ -126,6 +127,7 @@ namespace Football.Web
             services.AddSingleton(this.TokenConfiguration);
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddScoped<IGameService, GameService>();
+            services.AddScoped<IPlayerService, PlayerService>();
         }
 
         /// <summary>

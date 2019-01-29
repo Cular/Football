@@ -36,5 +36,11 @@ namespace Models.Data
         /// Gets or sets the friend.
         /// </summary>
         public virtual Player Friend { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is aprooved.
+        /// </summary>
+        [Column("isapproved")]
+        public bool IsApproved { get; set; }
     }
 }

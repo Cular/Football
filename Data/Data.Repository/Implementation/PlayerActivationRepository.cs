@@ -14,8 +14,6 @@ namespace Data.Repository.Implementation
     /// </summary>
     public class PlayerActivationRepository : BaseRepository<PlayerActivation, string>, IPlayerActivationRepository
     {
-        private readonly DbSet<PlayerActivation> playerActivations;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="PlayerActivationRepository"/> class.
         /// </summary>
@@ -23,7 +21,6 @@ namespace Data.Repository.Implementation
         public PlayerActivationRepository(FootballContext context)
             : base(context)
         {
-            this.playerActivations = context.PlayerActivations;
         }
     }
 }
