@@ -6,6 +6,7 @@ namespace Data.Repository.Implementation
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
     using Data.DataBaseContext;
@@ -39,7 +40,7 @@ namespace Data.Repository.Implementation
         public async Task CreateAsync(string playerId, string friendId)
         {
             var friendship = new Friendship { Id = Guid.NewGuid(), PlayerId = playerId, FriendId = friendId, IsApproved = true };
-            var oposite = new Friendship { Id = Guid.NewGuid(), PlayerId = playerId, FriendId = friendId, IsApproved = false };
+            var oposite = new Friendship { Id = Guid.NewGuid(), PlayerId = friendId, FriendId = playerId, IsApproved = false };
 
             using (var transaction = this.context.Database.BeginTransaction())
             {
@@ -76,6 +77,40 @@ namespace Data.Repository.Implementation
 
                 transaction.Commit();
             }
+        }
+
+        /// <summary>
+        /// Deletes the asynchronous.
+        /// </summary>
+        /// <param name="playerId">The player identifier</param>
+        /// <param name="friendId">The friend identifier</param>
+        /// <returns>
+        /// void result
+        /// </returns>
+        /// <exception cref="NotFoundException">Friendship with playerId:{playerId} and friendId:{friendId}</exception>
+        public async Task DeleteAsync(string playerId, string friendId)
+        {
+            var shouldDelete = await this.context.Friendships.Where(fs => (fs.PlayerId == playerId && fs.FriendId == friendId) || (fs.PlayerId == friendId && fs.FriendId == playerId)).ToListAsync();
+            if (shouldDelete.Count < 2)
+            {
+                throw new NotFoundException($"Friendship with playerId:{playerId} and friendId:{friendId} not found.");
+            }
+
+            this.context.Friendships.RemoveRange(shouldDelete);
+            await this.context.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Gets the asynchronous.
+        /// </summary>
+        /// <param name="playerId">The player identifier.</param>
+        /// <param name="friendId">The friend identifier.</param>
+        /// <returns>
+        /// The friendship by playerId and friendId
+        /// </returns>
+        public Task<Friendship> GetAsync(string playerId, string friendId)
+        {
+            return this.context.Friendships.FirstOrDefaultAsync(fs => fs.PlayerId == playerId && fs.FriendId == friendId);
         }
 
         /// <summary>

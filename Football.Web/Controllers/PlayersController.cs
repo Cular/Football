@@ -5,10 +5,14 @@
 namespace Football.Web.Controllers
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Models.Data.FriendshipComparer;
+    using Models.Dto;
     using Services.Players;
 
     /// <summary>
@@ -41,7 +45,7 @@ namespace Football.Web.Controllers
         /// <param name="friendid">The friendid.</param>
         /// <returns>The action result.</returns>
         [HttpPut]
-        [Route("friend/request/{friendid}")]
+        [Route("friends/{friendid}/request")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(400)]
@@ -57,19 +61,79 @@ namespace Football.Web.Controllers
             return this.Ok();
         }
 
+        /// <summary>
+        /// Approves the friend.
+        /// </summary>
+        /// <param name="friendId">The friend identifier.</param>
+        /// <returns>The action result.</returns>
         [HttpPut]
-        [Route("friend/approve/{friendshipId}")]
+        [Route("friends/{friendId}/approve")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> ApproveFriend([FromRoute]Guid friendshipId)
+        public async Task<IActionResult> ApproveFriend([FromRoute]string friendId)
         {
-            if (friendshipId == Guid.Empty)
+            if (string.IsNullOrEmpty(friendId))
             {
-                return this.BadRequest($"friendshipId shoud not be empty.");
+                return this.BadRequest($"friendId shoud not be empty.");
             }
 
-            await this.playerService.
+            await this.playerService.ApproveFriendshipAsync(this.User.Identity.Name, friendId);
+
+            return this.Ok();
+        }
+
+        /// <summary>
+        /// Removes the friend.
+        /// </summary>
+        /// <param name="friendId">The friend identifier.</param>
+        /// <returns>The action result.</returns>
+        [HttpDelete]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [Route("friends/{friendId}")]
+        public async Task<IActionResult> RemoveFriend([FromRoute]string friendId)
+        {
+            if (string.IsNullOrEmpty(friendId))
+            {
+                return this.BadRequest($"friendId shoud not be empty.");
+            }
+
+            await this.playerService.RemoveFriendshipAsync(this.User.Identity.Name, friendId);
+
+            return this.Ok();
+        }
+
+        /// <summary>
+        /// Gets all friends.
+        /// </summary>
+        /// <returns>The list of friends with approved status.</returns>
+        [HttpGet]
+        [Route("friends")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<FriendDto>))]
+        public async Task<IActionResult> GetAllFriends()
+        {
+            var friendships = await this.playerService.GetFriendshipsAsync(this.User.Identity.Name);
+
+            var result = friendships
+                .OrderBy(fs => fs.PlayerId)
+                .GroupBy(fs => new FriendKey { PlayerId = fs.PlayerId, FriendId = fs.FriendId }, new FriendshipComparer())
+                .Select(gfs =>
+                {
+                    var playerSide = gfs.First(fs => fs.PlayerId == this.User.Identity.Name);
+                    var friendSide = gfs.First(fs => fs != playerSide);
+
+                    if (playerSide.IsApproved)
+                    {
+                        return friendSide.IsApproved
+                            ? new FriendDto { Alias = friendSide.PlayerId, Status = FriendshipStatus.Approved }
+                            : new FriendDto { Alias = friendSide.PlayerId, Status = FriendshipStatus.Requested };
+                    }
+
+                    return new FriendDto { Alias = friendSide.PlayerId, Status = FriendshipStatus.Pending };
+                });
+
+            return this.Ok(result);
         }
     }
 }

@@ -43,6 +43,6 @@ namespace Models.Data
         /// <summary>
         /// Gets or sets the games of player
         /// </summary>
-        public List<PlayerGame> PlayerGames { get; set; }
+        public virtual List<PlayerGame> PlayerGames { get; set; }
     }
 }

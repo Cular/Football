@@ -1,6 +1,8 @@
 ﻿using Data.Repository.Interfaces;
 using Football.Core.Exceptions;
+using Models.Data;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Services.Players
@@ -16,9 +18,18 @@ namespace Services.Players
             this.friendshipRepository = friendshipRepository;
         }
 
-        public async Task ApproveFriendshipAsync(Guid friendshipId)
+        /// <summary>
+        /// Approves the friendship asynchronous.
+        /// </summary>
+        /// <param name="playerId"></param>
+        /// <param name="friendId"></param>
+        /// <returns>
+        /// void result
+        /// </returns>
+        /// <exception cref="NotFoundException">Friendship with Id {friendshipId}</exception>
+        public async Task ApproveFriendshipAsync(string playerId, string friendId)
         {
-            var friendship = await this.friendshipRepository.GetAsync(friendshipId) ?? throw new NotFoundException($"Friendship with Id {friendshipId} not exists.");
+            var friendship = await this.friendshipRepository.GetAsync(playerId, friendId) ?? throw new NotFoundException($"Friendship with playerId:{playerId} and friendId:{friendId} not exists.");
             if (!friendship.IsApproved)
             {
                 friendship.IsApproved = true;
@@ -26,6 +37,13 @@ namespace Services.Players
             }
         }
 
+        /// <summary>
+        /// Requests the friendship asynchronous.
+        /// </summary>
+        /// <param name="playerid">The playerid.</param>
+        /// <param name="friendid">The friendid.</param>
+        /// <returns></returns>
+        /// <exception cref="NotFoundException">Requested friend with id: {friendid}</exception>
         public async Task RequestFriendshipAsync(string playerid, string friendid)
         {
             if (await playerRepository.GetAsync(friendid) == null)
@@ -39,6 +57,31 @@ namespace Services.Players
             }
 
             await this.friendshipRepository.CreateAsync(playerid, friendid);
+        }
+
+        /// <summary>
+        /// Gets the friendships asynchronous.
+        /// </summary>
+        /// <param name="playerId">The player identifier.</param>
+        /// <returns>
+        /// List of friendships
+        /// </returns>
+        public Task<List<Friendship>> GetFriendshipsAsync(string playerId)
+        {
+            return this.friendshipRepository.GetAllAsync(fs => fs.PlayerId == playerId || fs.FriendId == playerId);
+        }
+
+        /// <summary>
+        /// Removes the friendship asynchronous.
+        /// </summary>
+        /// <param name="playerId"></param>
+        /// <param name="friendId"></param>
+        /// <returns>
+        /// void result
+        /// </returns>
+        public Task RemoveFriendshipAsync(string playerId, string friendId)
+        {
+            return friendshipRepository.DeleteAsync(playerId, friendId);
         }
     }
 }

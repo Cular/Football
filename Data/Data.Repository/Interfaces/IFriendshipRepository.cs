@@ -5,9 +5,8 @@
 namespace Data.Repository.Interfaces
 {
     using System;
-    using System.Collections.Generic;
-    using System.Text;
     using System.Threading.Tasks;
+    using Football.Core.Exceptions;
     using Models.Data;
 
     /// <summary>
@@ -34,8 +33,20 @@ namespace Data.Repository.Interfaces
         /// <summary>
         /// Deletes the asynchronous.
         /// </summary>
-        /// <param name="friendshipId">The identifier of friendship.</param>
-        /// <returns>void result</returns>
-        Task DeleteAsync(Guid friendshipId);
+        /// <param name="playerId">The player identifier</param>
+        /// <param name="friendId">The friend identifier</param>
+        /// <returns>
+        /// void result
+        /// </returns>
+        /// <exception cref="NotFoundException">Friendship with Id {friendshipId}</exception>
+        Task DeleteAsync(string playerId, string friendId);
+
+        /// <summary>
+        /// Gets the asynchronous.
+        /// </summary>
+        /// <param name="playerId">The player identifier.</param>
+        /// <param name="friendId">The friend identifier.</param>
+        /// <returns>The friendship by playerId and friendId</returns>
+        Task<Friendship> GetAsync(string playerId, string friendId);
     }
 }
