@@ -6,11 +6,14 @@ namespace Data.Repository.Implementation
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Text;
+    using System.Threading.Tasks;
     using Data.DataBaseContext;
     using Data.Repository.Interfaces;
     using Microsoft.EntityFrameworkCore;
     using Models.Data;
+    using Models.Data.GameState;
 
     /// <summary>
     /// The game repository.
@@ -24,6 +27,16 @@ namespace Data.Repository.Implementation
         public GameRepository(FootballContext context)
             : base(context)
         {
+        }
+
+        /// <inheritdoc/>
+        public Task<List<Game>> GetPagedAsync(string alias, int page, int count, GameStateEnum gameState)
+        {
+            return this.context.Games.AsNoTracking()
+                .Include(g => g.MeetingTimes)
+                .Include(g => g.PlayerGames)
+                .Include() //TODO: Декомпозиторовать Games -> MeetingTime -> PlayerVotes.
+                .Where(g => g.State.ToEnum() == gameState && g.PlayerGames.Any(pg => pg.PlayerId == alias)).Skip((page - 1) * count).Take(count).ToListAsync();
         }
     }
 }

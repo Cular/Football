@@ -15,12 +15,12 @@ namespace Models.Data.GameState
         Public = 0,
 
         /// <summary>
-        /// Game is closed and can be deleted or chating.
+        /// Game is closed. Allowed chating.
         /// </summary>
         Closed = 1,
 
         /// <summary>
-        /// Game is only for chating.
+        /// Game can be deleted or for chating.
         /// </summary>
         ReadOnly = 2
     }

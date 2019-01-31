@@ -20,6 +20,16 @@ namespace Models.Dto
         public Guid Id { get; set; }
 
         /// <summary>
+        /// Gets or sets the players involved in game.
+        /// </summary>
+        public List<PlayerDto> Players { get; set; }
+
+        /// <summary>
+        /// Gets or sets the list of meeting time with users voting.
+        /// </summary>
+        public List<MeetingTimeDto> MeetingTimes { get; set; }
+
+        /// <summary>
         /// Gets or sets the game state.
         /// </summary>
         public GameStateEnum GameState { get; set; }
