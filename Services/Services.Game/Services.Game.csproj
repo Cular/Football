@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Data\Data.Repository\Data.Repository.csproj" />
+    <ProjectReference Include="..\..\Models\Models.Data\Models.Data.csproj" />
+  </ItemGroup>
+
+</Project>

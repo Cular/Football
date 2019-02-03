@@ -25,9 +25,11 @@ namespace Football.Web
     using Models.Infrastructure;
     using Models.Mapper;
     using Models.Notification;
+    using Services.Game;
     using Services.Identity;
     using Services.Notification;
     using Services.Notification.Intefraces;
+    using Services.Players;
     using Services.Registration;
     using Swashbuckle.AspNetCore.Swagger;
     using Swashbuckle.AspNetCore.SwaggerGen;
@@ -113,6 +115,9 @@ namespace Football.Web
             services.AddScoped<IPlayerRepository, PlayerRepository>();
             services.AddScoped<IPlayerActivationRepository, PlayerActivationRepository>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            services.AddScoped<IGameRepository, GameRepository>();
+            services.AddScoped<IMeetingTimeRepository, MeetingTimeRepository>();
+            services.AddScoped<IFriendshipRepository, FriendshipRepository>();
 
             // Services
             services.AddTokenConfiguration(this.TokenConfiguration);
@@ -121,6 +126,8 @@ namespace Football.Web
             services.AddScoped<IRegisterNotifier, RegisterNotifier>();
             services.AddSingleton(this.TokenConfiguration);
             services.AddScoped<IIdentityService, IdentityService>();
+            services.AddScoped<IGameService, GameService>();
+            services.AddScoped<IPlayerService, PlayerService>();
         }
 
         /// <summary>

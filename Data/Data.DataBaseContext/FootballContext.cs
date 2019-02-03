@@ -18,6 +18,9 @@ namespace Data.DataBaseContext
             modelBuilder.ApplyConfiguration(new GameMap());
             modelBuilder.ApplyConfiguration(new PlayerActivationMap());
             modelBuilder.ApplyConfiguration(new RefreshTokenMap());
+            modelBuilder.ApplyConfiguration(new PlayersGamesMap());
+            modelBuilder.ApplyConfiguration(new MeetTimeMap());
+            modelBuilder.ApplyConfiguration(new FriendshipMap());
 
             base.OnModelCreating(modelBuilder);
         }
@@ -26,5 +29,8 @@ namespace Data.DataBaseContext
         public DbSet<Player> Players { get; set; }
         public DbSet<PlayerActivation> PlayerActivations { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<PlayerGame> PlayerGames { get; set; }
+        public DbSet<MeetingTime> MeetingTimes { get; set; }
+        public DbSet<Friendship> Friendships { get; set; }
     }
 }

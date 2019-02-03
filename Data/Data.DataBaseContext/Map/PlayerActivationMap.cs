@@ -12,7 +12,7 @@ namespace Data.DataBaseContext.Map
         public void Configure(EntityTypeBuilder<PlayerActivation> builder)
         {
             builder.HasKey(a => a.Id);
-            builder.HasOne(a => a.Player).WithOne().HasForeignKey<PlayerActivation>(pa => pa.PlayerId);
+            builder.HasOne(a => a.Player).WithOne().HasForeignKey<PlayerActivation>(pa => pa.PlayerId).IsRequired();
         }
     }
 }

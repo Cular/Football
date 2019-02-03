@@ -1,12 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <DocumentationFile>bin\x64\Debug\netcoreapp2.1\Football.Web.xml</DocumentationFile>
+    <DocumentationFile>bin\x64\Debug\netcoreapp2.2\Football.Web.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,15 +24,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="5.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="2.1.3" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="2.2.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.1" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="3.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,6 +41,8 @@
     <ProjectReference Include="..\Models\Models.Infrastructure\Models.Infrastructure.csproj" />
     <ProjectReference Include="..\Models\Models.Mapper\Models.Mapper.csproj" />
     <ProjectReference Include="..\Models\Models.Notification\Models.Notification.csproj" />
+    <ProjectReference Include="..\Services.Players\Services.Players.csproj" />
+    <ProjectReference Include="..\Services\Services.Game\Services.Game.csproj" />
     <ProjectReference Include="..\Services\Services.Identity\Services.Identity.csproj" />
     <ProjectReference Include="..\Services\Services.Notification\Services.Notification.csproj" />
     <ProjectReference Include="..\Services\Services.Registration\Services.Registration.csproj" />

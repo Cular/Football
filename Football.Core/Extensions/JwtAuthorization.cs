@@ -36,7 +36,7 @@ namespace Football.Core.Extensions
 
                 ClockSkew = TimeSpan.Zero,
 
-                NameClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier",
+                NameClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
             };
 
             services.AddAuthentication(options =>
@@ -103,7 +103,10 @@ namespace Football.Core.Extensions
 
         private static Claim[] GetClaims(this Player player)
         {
-            return new Claim[] { new Claim(FootballClaims.PlayerAlias, player.Id)};
+            return new Claim[] 
+            {
+                new Claim(ClaimTypes.Name, player.Id)
+            };
         }
     }
 }

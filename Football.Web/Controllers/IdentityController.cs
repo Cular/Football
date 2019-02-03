@@ -19,6 +19,7 @@ namespace Football.Web.Controllers
     /// <seealso cref="Microsoft.AspNetCore.Mvc.ControllerBase" />
     [Route("token")]
     [AllowAnonymous]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class IdentityController : ControllerBase
     {
         private readonly IIdentityService identity;

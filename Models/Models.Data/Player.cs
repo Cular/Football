@@ -4,6 +4,7 @@
 
 namespace Models.Data
 {
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
@@ -38,5 +39,10 @@ namespace Models.Data
         /// </value>
         [Column("active")]
         public bool Active { get; set; }
+
+        /// <summary>
+        /// Gets or sets the games of player
+        /// </summary>
+        public virtual List<PlayerGame> PlayerGames { get; set; }
     }
 }
