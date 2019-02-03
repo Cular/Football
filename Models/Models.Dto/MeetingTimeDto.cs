@@ -26,7 +26,7 @@ namespace Models.Dto
         /// <summary>
         /// Gets or sets a value indicating whether is meeting choosen.
         /// </summary>
-        public bool IsChoosen { get; set; }
+        public bool IsChosen { get; set; }
 
         /// <summary>
         /// Gets or sets the players.

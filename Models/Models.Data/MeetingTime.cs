@@ -38,9 +38,9 @@ namespace Models.Data
         public virtual List<PlayerVote> PlayerVotes { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is choosen.
+        /// Gets or sets a value indicating whether this instance is chosen.
         /// </summary>
-        [Column("ischoosen")]
-        public bool IsChoosen { get; set; }
+        [Column("ischosen")]
+        public bool IsChosen { get; set; }
     }
 }

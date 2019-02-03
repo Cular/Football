@@ -24,7 +24,9 @@ namespace Models.Mapper
             this.CreateMap<Game, GameDto>()
                 .ForMember(dto => dto.GameState, conf => conf.MapFrom(e => e.State.ToEnum()))
                 .ForMember(dto => dto.Players, conf => conf.MapFrom(e => e.PlayerGames.Select(pg => pg.Player)));
-                //.ForMember(dto => dto.MeetingTimes, conf => conf.MapFrom(e => e.MeetingTimes));
+
+            this.CreateMap<Game, GameListItemDto>()
+                .ForMember(dto => dto.GameState, conf => conf.MapFrom(e => e.State.ToEnum()));
 
             this.CreateMap<GameCreateDto, Game>()
                 .ForMember(e => e.State, conf => conf.MapFrom(dto => GameStateEnum.Public.ToState()))

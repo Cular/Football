@@ -32,11 +32,16 @@ namespace Data.Repository.Implementation
         /// <inheritdoc/>
         public Task<List<Game>> GetPagedAsync(string alias, int page, int count, GameStateEnum gameState)
         {
-            return this.context.Games.AsNoTracking()
-                .Include(g => g.MeetingTimes)
-                .Include(g => g.PlayerGames)
-                .Include() //TODO: Декомпозиторовать Games -> MeetingTime -> PlayerVotes.
-                .Where(g => g.State.ToEnum() == gameState && g.PlayerGames.Any(pg => pg.PlayerId == alias)).Skip((page - 1) * count).Take(count).ToListAsync();
+            return this.context.Games
+                .AsNoTracking()
+                ////.Include(g => g.MeetingTimes)
+                ////    .ThenInclude(mt => mt.PlayerVotes)
+                ////.Include(g => g.PlayerGames)
+                ////    .ThenInclude(pg => pg.Player)
+                .Where(g => g.State.ToEnum() == gameState && g.PlayerGames.Any(pg => pg.PlayerId == alias))
+                .Skip((page - 1) * count)
+                .Take(count)
+                .ToListAsync();
         }
     }
 }

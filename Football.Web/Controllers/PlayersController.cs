@@ -45,7 +45,7 @@ namespace Football.Web.Controllers
         /// <param name="friendid">The friendid.</param>
         /// <returns>The action result.</returns>
         [HttpPut]
-        [Route("friends/{friendid}/request")]
+        [Route("friends/{friendid}/_request")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(400)]
@@ -67,7 +67,7 @@ namespace Football.Web.Controllers
         /// <param name="friendId">The friend identifier.</param>
         /// <returns>The action result.</returns>
         [HttpPut]
-        [Route("friends/{friendId}/approve")]
+        [Route("friends/{friendId}/_approve")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]

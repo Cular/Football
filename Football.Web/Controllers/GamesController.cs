@@ -22,7 +22,7 @@ namespace Football.Web.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class GamesController : ControllerBase
+    public partial class GamesController : ControllerBase
     {
         private readonly IGameService gameService;
         private readonly IMapper mapper;
@@ -58,17 +58,39 @@ namespace Football.Web.Controllers
         }
 
         /// <summary>
+        /// Deletes the game.
+        /// </summary>
+        /// <param name="gameId">The game identifier.</param>
+        /// <returns>The action result.</returns>
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(403)]
+        [HttpDelete]
+        [Route("{gameId}")]
+        public async Task<IActionResult> DeleteGame([FromRoute]Guid gameId)
+        {
+            if (gameId == Guid.Empty)
+            {
+                return this.BadRequest("Game identifier can not be default.");
+            }
+
+            await this.gameService.DeleteGameAsync(gameId, this.User.Identity.Name);
+            return this.Ok();
+        }
+
+        /// <summary>
         /// Find all created games by user.
         /// </summary>
         /// <returns>Array of games.</returns>
         [Route("my")]
         [HttpGet]
-        [ProducesResponseType(200, Type=typeof(List<GameDto>))]
+        [ProducesResponseType(200, Type=typeof(List<GameListItemDto>))]
         public async Task<IActionResult> GetMyGames()
         {
             var result = await this.gameService.GetMyGamesAsync(this.User.Identity.Name);
 
-            return this.Ok(result.Select(r => this.mapper.Map<GameDto>(r)));
+            return this.Ok(result.Select(r => this.mapper.Map<GameListItemDto>(r)));
         }
 
         /// <summary>
@@ -77,9 +99,9 @@ namespace Football.Web.Controllers
         /// <param name="page">page number.</param>
         /// <param name="count">count number.</param>
         /// <param name="gameState">state of game.</param>
-        /// <returns>List of <see cref="GameDto"/></returns>
+        /// <returns>List of <see cref="GameListItemDto"/></returns>
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(List<GameDto>))]
+        [ProducesResponseType(200, Type = typeof(List<GameListItemDto>))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetGames([FromQuery] int page = 1, [FromQuery] int count = 20, [FromQuery] GameStateEnum gameState = GameStateEnum.Public)
         {
@@ -90,7 +112,28 @@ namespace Football.Web.Controllers
 
             var result = await this.gameService.GetAllGamesAsync(this.User.Identity.Name, page, count, gameState);
 
-            return this.Ok(result.Select(r => this.mapper.Map<GameDto>(r)));
+            return this.Ok(result.Select(r => this.mapper.Map<GameListItemDto>(r)));
+        }
+
+        /// <summary>
+        /// Find game by id.
+        /// </summary>
+        /// <param name="gameId">the game identifier.</param>
+        /// <returns>Emtity <see cref="GameDto"/></returns>
+        [HttpGet]
+        [Route("{gameId}")]
+        [ProducesResponseType(200, Type = typeof(GameDto))]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetGame([FromRoute] Guid gameId)
+        {
+            if (gameId == Guid.Empty)
+            {
+                return this.BadRequest("Game identifier can not be default.");
+            }
+
+            var result = await this.gameService.GetGameAsync(gameId);
+
+            return this.Ok(this.mapper.Map<GameDto>(result));
         }
 
         /// <summary>
@@ -100,7 +143,7 @@ namespace Football.Web.Controllers
         /// <param name="alias">The player alias.</param>
         /// <returns>The action result.</returns>
         [HttpPut]
-        [Route("{gameId}/invite")]
+        [Route("{gameId}/_invite")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
@@ -115,38 +158,6 @@ namespace Football.Web.Controllers
             {
                 // ToDo: add push sending call.
             }
-
-            return this.Ok();
-        }
-
-        /// <summary>
-        /// Tries to add time of meet in game.
-        /// </summary>
-        /// <param name="gameId">Game identifier.</param>
-        /// <param name="meetingTimeDto">Specialized time.</param>
-        /// <returns>The action result.</returns>
-        [HttpPost]
-        [Route("{gameId}/meetingtime")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
-        public async Task<IActionResult> AddMeetTime([FromRoute] Guid gameId, [FromBody] MeetingTimeCreateDto meetingTimeDto)
-        {
-            if (gameId == Guid.Empty || meetingTimeDto == null)
-            {
-                return this.BadRequest("GameId or meetingTimeDto can not be empty or null.");
-            }
-
-            if (meetingTimeDto.TimeOfMeet.ToUniversalTime() < DateTimeOffset.UtcNow.Add(TimeSpan.FromHours(1)))
-            {
-                return this.BadRequest("MeetingTime should be more than UtcNow + 1 hour.");
-            }
-
-            var meetingTime = this.mapper.Map<MeetingTime>(meetingTimeDto);
-            meetingTime.GameId = gameId;
-            meetingTime.Id = Guid.NewGuid();
-
-            await this.gameService.AddMeetingTimeAsync(meetingTime);
 
             return this.Ok();
         }
