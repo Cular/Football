@@ -1,8 +1,7 @@
 ﻿using Models.Data;
-using System;
 using System.Collections.Generic;
-using Football.Core.Exceptions;
 using System.Threading.Tasks;
+using Football.Exceptions;
 
 namespace Services.Players
 {

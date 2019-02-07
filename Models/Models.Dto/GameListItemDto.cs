@@ -1,4 +1,4 @@
-﻿// <copyright file="GameListDto.cs" company="Yarik Home">
+﻿// <copyright file="GameListItemDto.cs" company="Yarik Home">
 // All rights maybe reserved. © Yarik
 // </copyright>
 

@@ -43,12 +43,7 @@ namespace Services.Game
         {
             var game = await this.gameRepository.GetAsync(gameId) ?? throw new NotFoundException($"Game with id {gameId} not exists.");
 
-            if (game.AdminId != playerId)
-            {
-                throw new ForbiddenException($"Player with alias {playerId} does not admin in game.");
-            }
-
-            if (game.State.CanDelete)
+            if (game.IsCanBeDeleted(playerId))
             {
                 await this.gameRepository.DeleteAsync(gameId);
             }
@@ -57,15 +52,27 @@ namespace Services.Game
         public async Task<bool> TryInvitePlayerToGameAsync(Guid gameId, string playerId)
         {
             var game = await this.gameRepository.GetAsync(gameId) ?? throw new NotFoundException($"Game with id {gameId} not exists.");
-            
+            var player = await this.playerRepository.GetAsync(playerId) ?? throw new NotFoundException($"Player with id {playerId} not exists.");
+
             if (game.TryAddPlayer(new PlayerGame { GameId = gameId, PlayerId = playerId }))
             {
-                var player = await this.playerRepository.GetAsync(playerId) ?? throw new NotFoundException($"Player with id {playerId} not exists.");
                 await this.gameRepository.UpdateAsync(game);
                 return true;
             }
 
             return false;
+        }
+
+        public async Task CloseGameAsync(Guid gameId, string playerId)
+        {
+            var game = await this.gameRepository.GetAsync(gameId) ?? throw new NotFoundException($"Game with id {gameId} not exists.");
+
+            // ToDo: refactoring workin with state.
+            if (game.IsCanBeClosed(playerId))
+            {
+                game.State = new ClosedState();
+                await this.gameRepository.UpdateAsync(game);
+            }
         }
     }
 }

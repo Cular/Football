@@ -12,6 +12,8 @@ namespace Services.Game
 
         Task DeleteGameAsync(Guid gameId, string playerId);
 
+        Task CloseGameAsync(Guid gameId, string playerId);
+
         Task<List<Models.Data.Game>> GetMyGamesAsync(string playerId);
 
         Task<List<Models.Data.Game>> GetAllGamesAsync(string playerId, int page, int count, GameStateEnum gameState);

@@ -17,30 +17,23 @@ namespace Football.Web.Controllers
     /// <summary>
     /// Registration controller.
     /// </summary>
-    /// <seealso cref="Microsoft.AspNetCore.Mvc.ControllerBase" />
     [Route("api/registration")]
     [ApiController]
     [AllowAnonymous]
     public class RegistrationController : ControllerBase
     {
-        private readonly IPlayerRepository playerRepository;
         private readonly IMapper mapper;
-        private readonly IRegisterNotifier notifier;
-        private readonly IPlayerActivationRepository activationRepository;
+        private readonly IRegistrationService registrationService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RegistrationController"/> class.
         /// </summary>
-        /// <param name="playerRepository">The player repository.</param>
         /// <param name="mapper">The mapper.</param>
-        /// <param name="notifier">The notify service.</param>
-        /// <param name="activationRepository">activation repository.</param>
-        public RegistrationController(IPlayerRepository playerRepository, IMapper mapper, IRegisterNotifier notifier, IPlayerActivationRepository activationRepository)
+        /// <param name="registrationService">The registration service.</param>
+        public RegistrationController(IMapper mapper, IRegistrationService registrationService)
         {
-            this.playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            this.notifier = notifier ?? throw new ArgumentNullException(nameof(notifier));
-            this.activationRepository = activationRepository ?? throw new ArgumentNullException(nameof(activationRepository));
+            this.registrationService = registrationService ?? throw new ArgumentNullException(nameof(registrationService));
         }
 
         /// <summary>
@@ -53,11 +46,8 @@ namespace Football.Web.Controllers
         [ProducesResponseType(409)]
         public async Task<IActionResult> RegisterPlayer([FromBody] PlayerDtoCreate dtoCreate)
         {
-            // TODO: Change work with Facebook auth.
             var player = this.mapper.Map<Player>(dtoCreate);
-            var result = await this.playerRepository.CreateAsync(player);
-
-            // await this.notifier.SendRegisterInfo(result);
+            await this.registrationService.CreatePlayerAsync(player);
             return this.Ok();
         }
 
@@ -69,20 +59,16 @@ namespace Football.Web.Controllers
         [HttpPost]
         [Route("activate/{code}")]
         [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> Activate([FromRoute] string code)
         {
-            var activation = await this.activationRepository.GetAsync(code);
-
-            if (activation == null)
+            if (string.IsNullOrEmpty(code))
             {
-                return this.NotFound();
+                return this.BadRequest("Code should not be null or empty.");
             }
 
-            activation.Player.Active = true;
-
-            await this.playerRepository.UpdateAsync(activation.Player);
-            await this.activationRepository.DeleteAsync(activation);
+            await this.registrationService.ActivateAccountAsync(code);
 
             return this.Ok();
         }

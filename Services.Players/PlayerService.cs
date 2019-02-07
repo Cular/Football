@@ -1,7 +1,6 @@
 ﻿using Data.Repository.Interfaces;
-using Football.Core.Exceptions;
+using Football.Exceptions;
 using Models.Data;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

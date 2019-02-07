@@ -80,6 +80,28 @@ namespace Football.Web.Controllers
         }
 
         /// <summary>
+        /// Closes the game.
+        /// </summary>
+        /// <param name="gameId">The game identifier.</param>
+        /// <returns>The action result.</returns>
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(403)]
+        [HttpPut]
+        [Route("{gameId}/_close")]
+        public async Task<IActionResult> CloseGame([FromRoute]Guid gameId)
+        {
+            if (gameId == Guid.Empty)
+            {
+                return this.BadRequest("Game identifier can not be default.");
+            }
+
+            await this.gameService.CloseGameAsync(gameId, this.User.Identity.Name);
+            return this.Ok();
+        }
+
+        /// <summary>
         /// Find all created games by user.
         /// </summary>
         /// <returns>Array of games.</returns>

@@ -87,5 +87,41 @@ namespace Models.Data
 
             return playerVote == null ? false : meetingtime.PlayerVotes.Remove(playerVote);
         }
+
+        /// <summary>
+        /// Determines whether [is can be deleted] [the specified admin].
+        /// </summary>
+        /// <param name="admin">The admin.</param>
+        /// <returns>
+        ///   <c>true</c> if [is can be deleted] [the specified admin]; otherwise, <c>false</c>.
+        /// </returns>
+        /// <exception cref="ForbiddenException">Player with alias {admin}</exception>
+        public bool IsCanBeDeleted(string admin)
+        {
+            if (this.AdminId != admin)
+            {
+                throw new ForbiddenException($"Player with alias {admin} does not admin in game.");
+            }
+
+            return this.State.CanDelete;
+        }
+
+        /// <summary>
+        /// Determines whether [is can be closed] [the specified admin].
+        /// </summary>
+        /// <param name="admin">The admin.</param>
+        /// <returns>
+        ///   <c>true</c> if [is can be closed] [the specified admin]; otherwise, <c>false</c>.
+        /// </returns>
+        /// <exception cref="ForbiddenException">Player with alias {admin}</exception>
+        public bool IsCanBeClosed(string admin)
+        {
+            if (this.AdminId != admin)
+            {
+                throw new ForbiddenException($"Player with alias {admin} does not admin in game.");
+            }
+
+            return this.State is PublicState;
+        }
     }
 }

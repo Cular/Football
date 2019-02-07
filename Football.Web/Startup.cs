@@ -128,6 +128,7 @@ namespace Football.Web
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddScoped<IGameService, GameService>();
             services.AddScoped<IPlayerService, PlayerService>();
+            services.AddScoped<IRegistrationService, RegistrationService>();
         }
 
         /// <summary>

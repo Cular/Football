@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Data\Data.Repository\Data.Repository.csproj" />
+    <ProjectReference Include="..\Football.Exceptions\Football.Exceptions.csproj" />
   </ItemGroup>
 
 </Project>

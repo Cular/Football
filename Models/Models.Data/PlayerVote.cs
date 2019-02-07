@@ -15,11 +15,29 @@ namespace Models.Data
     [Table("playervotes")]
     public class PlayerVote : Entity<Guid>
     {
+        /// <summary>
+        /// Gets or sets the meeting time identifier.
+        /// </summary>
+        /// <value>
+        /// The meeting time identifier.
+        /// </value>
         [Column("meetingtimeid")]
         public Guid MeetingTimeId { get; set; }
 
+        /// <summary>
+        /// Gets or sets the meeting time.
+        /// </summary>
+        /// <value>
+        /// The meeting time.
+        /// </value>
         public virtual MeetingTime MeetingTime { get; set; }
 
+        /// <summary>
+        /// Gets or sets the player identifier.
+        /// </summary>
+        /// <value>
+        /// The player identifier.
+        /// </value>
         [Column("playerid")]
         public string PlayerId { get; set; }
     }
