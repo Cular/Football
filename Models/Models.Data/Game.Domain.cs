@@ -107,21 +107,20 @@ namespace Models.Data
         }
 
         /// <summary>
-        /// Determines whether [is can be closed] [the specified admin].
+        /// Tries to change game state.
         /// </summary>
         /// <param name="admin">The admin.</param>
-        /// <returns>
-        ///   <c>true</c> if [is can be closed] [the specified admin]; otherwise, <c>false</c>.
-        /// </returns>
+        /// <param name="gameState">New state of game.</param>
+        /// <returns>Successness of action.</returns>
         /// <exception cref="ForbiddenException">Player with alias {admin}</exception>
-        public bool IsCanBeClosed(string admin)
+        public bool TryChangeGameState(string admin, GameStateEnum gameState)
         {
             if (this.AdminId != admin)
             {
                 throw new ForbiddenException($"Player with alias {admin} does not admin in game.");
             }
 
-            return this.State is PublicState;
+            return this.State.TryChangeState(gameState.ToState(), this);
         }
     }
 }

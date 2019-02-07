@@ -14,23 +14,26 @@ namespace Models.Data.GameState
         /// Vote = true,
         /// Chat = true,
         /// Delete = true.
+        /// Close = true.
         /// </summary>
-        Public = 0,
+        Open = 0,
 
         /// <summary>
-        /// Game is closed. Allowed chating.
-        /// Vote = false,
-        /// Chat = false,
-        /// Delete = false.
-        /// </summary>
-        Closed = 1,
-
-        /// <summary>
-        /// Game can be deleted or for chating.
+        /// Game can be closed, deleted or for chating.
         /// Vote = false,
         /// Chat = true,
         /// Delete = true.
+        /// Close = true.
         /// </summary>
-        ReadOnly = 2
+        ChatOnly = 1,
+
+        /// <summary>
+        /// Game is closed.
+        /// Vote = false,
+        /// Chat = false,
+        /// Delete = false.
+        /// Close = false.
+        /// </summary>
+        Closed = 2,
     }
 }

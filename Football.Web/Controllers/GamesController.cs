@@ -19,7 +19,7 @@ namespace Football.Web.Controllers
     /// <summary>
     /// The game controller.
     /// </summary>
-    [Route("api/[controller]")]
+    [Route("api/games")]
     [ApiController]
     [Authorize]
     public partial class GamesController : ControllerBase
@@ -75,30 +75,39 @@ namespace Football.Web.Controllers
                 return this.BadRequest("Game identifier can not be default.");
             }
 
-            await this.gameService.DeleteGameAsync(gameId, this.User.Identity.Name);
-            return this.Ok();
+            if (await this.gameService.DeleteGameAsync(gameId, this.User.Identity.Name))
+            {
+                return this.Ok();
+            }
+
+            return this.BadRequest("Game can not be deleted.");
         }
 
         /// <summary>
-        /// Closes the game.
+        /// Changes state of the game.
         /// </summary>
         /// <param name="gameId">The game identifier.</param>
+        /// <param name="gameStateEnum">New state of game.</param>
         /// <returns>The action result.</returns>
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(403)]
         [HttpPut]
-        [Route("{gameId}/_close")]
-        public async Task<IActionResult> CloseGame([FromRoute]Guid gameId)
+        [Route("{gameId}/state")]
+        public async Task<IActionResult> ChangeGameState([FromRoute]Guid gameId, [FromQuery] GameStateEnum gameStateEnum)
         {
             if (gameId == Guid.Empty)
             {
                 return this.BadRequest("Game identifier can not be default.");
             }
 
-            await this.gameService.CloseGameAsync(gameId, this.User.Identity.Name);
-            return this.Ok();
+            if (await this.gameService.ChangeGameStateAsync(gameId, this.User.Identity.Name, gameStateEnum))
+            {
+                return this.Ok();
+            }
+
+            return this.BadRequest($"Game {gameId} can not be chaned to state {gameStateEnum}.");
         }
 
         /// <summary>
@@ -125,7 +134,7 @@ namespace Football.Web.Controllers
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(List<GameListItemDto>))]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GetGames([FromQuery] int page = 1, [FromQuery] int count = 20, [FromQuery] GameStateEnum gameState = GameStateEnum.Public)
+        public async Task<IActionResult> GetGames([FromQuery] int page = 1, [FromQuery] int count = 20, [FromQuery] GameStateEnum gameState = GameStateEnum.Open)
         {
             if (page < 1)
             {
@@ -180,6 +189,106 @@ namespace Football.Web.Controllers
             {
                 // ToDo: add push sending call.
             }
+
+            return this.Ok();
+        }
+
+        /// <summary>
+        /// Sets the chosen time.
+        /// </summary>
+        /// <param name="gameId">The game identifier.</param>
+        /// <param name="meetingtimeId">The meetingtime identifier.</param>
+        /// <returns>Action result.</returns>
+        [HttpPost]
+        [Route("{gameId}/meetingtimes/{meetingtimeId}/_setchosen")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(403)]
+        public async Task<IActionResult> SetChosenTime([FromRoute] Guid gameId, [FromRoute] Guid meetingtimeId)
+        {
+            if (gameId == Guid.Empty || meetingtimeId == Guid.Empty)
+            {
+                return this.BadRequest("GameId or meetingtimeId can not be empty or null.");
+            }
+
+            await this.gameService.SetChosenTimeAsync(gameId, meetingtimeId, this.User.Identity.Name);
+
+            return this.Ok();
+        }
+
+        /// <summary>
+        /// Tries to add time of meet in game.
+        /// </summary>
+        /// <param name="gameId">Game identifier.</param>
+        /// <param name="meetingTimeDto">Specialized time.</param>
+        /// <returns>The action result.</returns>
+        [HttpPost]
+        [Route("{gameId}/meetingtimes")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(409)]
+        public async Task<IActionResult> AddMeetTime([FromRoute] Guid gameId, [FromBody] MeetingTimeCreateDto meetingTimeDto)
+        {
+            if (gameId == Guid.Empty || meetingTimeDto == null)
+            {
+                return this.BadRequest("GameId or meetingTimeDto can not be empty or null.");
+            }
+
+            if (meetingTimeDto.TimeOfMeet.ToUniversalTime() < DateTimeOffset.UtcNow.Add(TimeSpan.FromHours(1)))
+            {
+                return this.BadRequest("MeetingTime should be more than UtcNow + 1 hour.");
+            }
+
+            await this.gameService.AddMeetingTimeAsync(meetingTimeDto.TimeOfMeet, gameId);
+
+            return this.Ok();
+        }
+
+        /// <summary>
+        /// Votes the game.
+        /// </summary>
+        /// <param name="gameId">The game identifier.</param>
+        /// <param name="meetingtimeId">The meetingtime identifier.</param>
+        /// <returns>Action result.</returns>
+        [HttpPut]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(403)]
+        [Route("{gameId}/meetingtimes/{meetingtimeId}/votes")]
+        public async Task<IActionResult> VoteGame([FromRoute] Guid gameId, [FromRoute] Guid meetingtimeId)
+        {
+            if (gameId == Guid.Empty || meetingtimeId == Guid.Empty)
+            {
+                return this.BadRequest("GameId or meetingtimeId can not be empty or null.");
+            }
+
+            await this.gameService.AddVoteAsync(gameId, meetingtimeId, this.User.Identity.Name);
+
+            return this.Ok();
+        }
+
+        /// <summary>
+        /// Removes the vote.
+        /// </summary>
+        /// <param name="gameId">The game identifier.</param>
+        /// <param name="meetingtimeId">The meetingtime identifier.</param>
+        /// <returns>The action result.</returns>
+        [HttpDelete]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(403)]
+        [Route("{gameId}/meetingtimes/{meetingtimeId}/votes")]
+        public async Task<IActionResult> RemoveVote([FromRoute] Guid gameId, [FromRoute] Guid meetingtimeId)
+        {
+            if (gameId == Guid.Empty || meetingtimeId == Guid.Empty)
+            {
+                return this.BadRequest("GameId or meetingtimeId can not be empty or null.");
+            }
+
+            await this.gameService.RemoveVoteAsync(gameId, meetingtimeId, this.User.Identity.Name);
 
             return this.Ok();
         }

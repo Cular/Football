@@ -29,7 +29,7 @@ namespace Models.Mapper
                 .ForMember(dto => dto.GameState, conf => conf.MapFrom(e => e.State.ToEnum()));
 
             this.CreateMap<GameCreateDto, Game>()
-                .ForMember(e => e.State, conf => conf.MapFrom(dto => GameStateEnum.Public.ToState()))
+                .ForMember(e => e.State, conf => conf.MapFrom(dto => GameStateEnum.Open.ToState()))
                 .ForMember(e => e.Id, conf => conf.MapFrom(dto => Guid.NewGuid()))
                 .ForMember(e => e.PlayerGames, conf => conf.MapFrom(dto => new List<PlayerGame>()));
 

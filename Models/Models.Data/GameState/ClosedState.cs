@@ -17,8 +17,14 @@ namespace Models.Data.GameState
         /// Initializes a new instance of the <see cref="ClosedState"/> class.
         /// </summary>
         public ClosedState()
-            : base(false, false, false)
+            : base(false, false, false, false)
         {
+        }
+
+        /// <inheritdoc/>
+        public override bool TryChangeState(State newState, Game game)
+        {
+            return false;
         }
     }
 }

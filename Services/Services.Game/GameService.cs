@@ -39,14 +39,17 @@ namespace Services.Game
             return gameRepository.GetAllAsync(g => g.AdminId == playerId);
         }
 
-        public async Task DeleteGameAsync(Guid gameId, string playerId)
+        public async Task<bool> DeleteGameAsync(Guid gameId, string playerId)
         {
             var game = await this.gameRepository.GetAsync(gameId) ?? throw new NotFoundException($"Game with id {gameId} not exists.");
 
             if (game.IsCanBeDeleted(playerId))
             {
                 await this.gameRepository.DeleteAsync(gameId);
+                return true;
             }
+
+            return false;
         }
 
         public async Task<bool> TryInvitePlayerToGameAsync(Guid gameId, string playerId)
@@ -63,16 +66,17 @@ namespace Services.Game
             return false;
         }
 
-        public async Task CloseGameAsync(Guid gameId, string playerId)
+        public async Task<bool> ChangeGameStateAsync(Guid gameId, string playerId, GameStateEnum gameStateEnum)
         {
             var game = await this.gameRepository.GetAsync(gameId) ?? throw new NotFoundException($"Game with id {gameId} not exists.");
 
-            // ToDo: refactoring workin with state.
-            if (game.IsCanBeClosed(playerId))
+            if (game.TryChangeGameState(playerId, gameStateEnum))
             {
-                game.State = new ClosedState();
                 await this.gameRepository.UpdateAsync(game);
+                return true;
             }
+
+            return false;
         }
     }
 }

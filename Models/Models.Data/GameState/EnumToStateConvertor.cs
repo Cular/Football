@@ -18,11 +18,11 @@ namespace Models.Data.GameState
         {
             switch (stateEnumeration)
             {
-                case GameStateEnum.Public:
-                    return new PublicState();
+                case GameStateEnum.Open:
+                    return new OpenState();
 
-                case GameStateEnum.ReadOnly:
-                    return new ReadOnlyState();
+                case GameStateEnum.ChatOnly:
+                    return new ChatOnlyState();
 
                 case GameStateEnum.Closed:
                 default:
@@ -39,11 +39,11 @@ namespace Models.Data.GameState
         {
             switch (state)
             {
-                case PublicState s:
-                    return GameStateEnum.Public;
+                case OpenState s:
+                    return GameStateEnum.Open;
 
-                case ReadOnlyState s:
-                    return GameStateEnum.ReadOnly;
+                case ChatOnlyState s:
+                    return GameStateEnum.ChatOnly;
 
                 case ClosedState s:
                 default:
