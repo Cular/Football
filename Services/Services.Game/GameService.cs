@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Data.Repository.Interfaces;
-using Football.Core.Exceptions;
+using Football.Exceptions;
 using Models.Data;
 using Models.Data.GameState;
 
@@ -58,18 +57,15 @@ namespace Services.Game
         public async Task<bool> TryInvitePlayerToGameAsync(Guid gameId, string playerId)
         {
             var game = await this.gameRepository.GetAsync(gameId) ?? throw new NotFoundException($"Game with id {gameId} not exists.");
-
-            if (game.PlayerGames.Any(pg => pg.PlayerId == playerId))
+            
+            if (game.TryAddPlayer(new PlayerGame { GameId = gameId, PlayerId = playerId }))
             {
-                return false;
+                var player = await this.playerRepository.GetAsync(playerId) ?? throw new NotFoundException($"Player with id {playerId} not exists.");
+                await this.gameRepository.UpdateAsync(game);
+                return true;
             }
 
-            var player = await this.playerRepository.GetAsync(playerId) ?? throw new NotFoundException($"Player with id {playerId} not exists.");
-            game.PlayerGames.Add(new PlayerGame { GameId = gameId, PlayerId = playerId });
-
-            await this.gameRepository.UpdateAsync(game);
-
-            return true;
+            return false;
         }
     }
 }

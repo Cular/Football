@@ -50,7 +50,7 @@ namespace Football.Web.Controllers
             var entity = this.mapper.Map<Game>(dto);
 
             entity.AdminId = this.User.Identity.Name;
-            entity.PlayerGames.Add(new PlayerGame { PlayerId = this.User.Identity.Name, GameId = entity.Id });
+            entity.TryAddPlayer(new PlayerGame { PlayerId = this.User.Identity.Name, GameId = entity.Id });
 
             await this.gameService.CreateAsync(entity);
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Football.Core.Exceptions
+namespace Football.Exceptions
 {
     public class TokenExpiredException : BaseException
     {
