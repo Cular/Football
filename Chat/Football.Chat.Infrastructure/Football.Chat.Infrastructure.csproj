@@ -5,8 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="8.0.0" />
-    <PackageReference Include="MongoDB.Driver" Version="2.7.3" />
+    <ProjectReference Include="..\Football.Chat.Models\Football.Chat.Models.csproj" />
   </ItemGroup>
 
 </Project>

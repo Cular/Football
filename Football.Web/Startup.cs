@@ -11,9 +11,11 @@ namespace Football.Web
     using Data.DataBaseContext;
     using Data.Repository.Implementation;
     using Data.Repository.Interfaces;
+    using Football.Chat.Models.Mapper;
     using Football.Chat.Repository.Extensions;
     using Football.Core.Extensions;
     using Football.Core.Middleware;
+    using Football.Web.Hubs;
     using Football.Web.Validation;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -77,13 +79,7 @@ namespace Football.Web
         /// <param name="services">The services.</param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(options =>
-            {
-                options.Filters.Add(typeof(ValidationModelAttribute));
-            })
-            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
-            services.AddAutoMapper(typeof(MainProfile));
+            services.AddAutoMapper(typeof(MainProfile), typeof(ChatProfile));
 
             services.AddSwaggerGen(x =>
             {
@@ -131,6 +127,16 @@ namespace Football.Web
             services.AddScoped<IGameService, GameService>();
             services.AddScoped<IPlayerService, PlayerService>();
             services.AddScoped<IRegistrationService, RegistrationService>();
+
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(typeof(ValidationModelAttribute));
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddCors();
+
+            services.AddSignalR()
+                .AddHubOptions<ChatHub>(options => options.EnableDetailedErrors = true);
         }
 
         /// <summary>
@@ -146,7 +152,21 @@ namespace Football.Web
             }
 
             app.UseMiddleware<ExceptionHandlingMiddleware>();
+            var wsOptions = new WebSocketOptions();
 
+#if DEBUG
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyHeader();
+                builder.AllowAnyMethod();
+                builder.WithOrigins("http://localhost:5010", "http://localhost");
+                builder.AllowCredentials();
+            });
+
+            wsOptions.AllowedOrigins.Add("http://localhost:5010");
+            wsOptions.AllowedOrigins.Add("http://localhost");
+#endif
+            app.UseWebSockets(wsOptions);
             app.UseSwagger();
 
             app.UseSwaggerUI(c =>
@@ -154,8 +174,8 @@ namespace Football.Web
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Football API V1");
             });
 
+            app.UseSignalR(hrb => hrb.MapHub<ChatHub>("/hubs/chat"));
             app.UseAuthentication();
-
             app.UseMvc();
         }
 

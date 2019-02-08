@@ -2,14 +2,14 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Football.Chat.Models
+namespace Football.Chat.Models.Dal
 {
     public class Message
     {
         [BsonId]
         public Guid Id { get; set; }
 
-        [BsonElement("messageId")]
+        [BsonElement("gameId")]
         public Guid GameId { get; set; }
 
         [BsonElement("playerid")]

@@ -1,4 +1,5 @@
 ﻿using Football.Chat.Models;
+using Football.Chat.Models.Dal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;

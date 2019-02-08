@@ -1,4 +1,4 @@
-﻿using Football.Chat.Models;
+﻿using Football.Chat.Models.Dal;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

@@ -141,6 +141,8 @@ namespace Football.Web.Controllers
                 return this.BadRequest("Page number can not be less than 1.");
             }
 
+            var context = this.HttpContext;
+
             var result = await this.gameService.GetAllGamesAsync(this.User.Identity.Name, page, count, gameState);
 
             return this.Ok(result.Select(r => this.mapper.Map<GameListItemDto>(r)));

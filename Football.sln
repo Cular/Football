@@ -49,9 +49,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Football.Exceptions", "Foot
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Chat", "Chat", "{43C0369A-4C1D-4941-A3C6-8E00C4BE2C66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Football.Chat.Models", "Chat\Football.Chat.Models\Football.Chat.Models.csproj", "{761DC3C8-8197-4D00-A434-8455EDCD15EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Football.Chat.Models", "Chat\Football.Chat.Models\Football.Chat.Models.csproj", "{761DC3C8-8197-4D00-A434-8455EDCD15EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Football.Chat.Repository", "Chat\Football.Chat.Repository\Football.Chat.Repository.csproj", "{26F8CC93-0726-4B8A-B7B5-C8C78D9578AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Football.Chat.Repository", "Chat\Football.Chat.Repository\Football.Chat.Repository.csproj", "{26F8CC93-0726-4B8A-B7B5-C8C78D9578AD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Football.Chat.Infrastructure", "Chat\Football.Chat.Infrastructure\Football.Chat.Infrastructure.csproj", "{C20B3CB2-425C-4D3A-B270-7FF7C286668F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -221,6 +223,14 @@ Global
 		{26F8CC93-0726-4B8A-B7B5-C8C78D9578AD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{26F8CC93-0726-4B8A-B7B5-C8C78D9578AD}.Release|x64.ActiveCfg = Release|Any CPU
 		{26F8CC93-0726-4B8A-B7B5-C8C78D9578AD}.Release|x64.Build.0 = Release|Any CPU
+		{C20B3CB2-425C-4D3A-B270-7FF7C286668F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C20B3CB2-425C-4D3A-B270-7FF7C286668F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C20B3CB2-425C-4D3A-B270-7FF7C286668F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C20B3CB2-425C-4D3A-B270-7FF7C286668F}.Debug|x64.Build.0 = Debug|Any CPU
+		{C20B3CB2-425C-4D3A-B270-7FF7C286668F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C20B3CB2-425C-4D3A-B270-7FF7C286668F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C20B3CB2-425C-4D3A-B270-7FF7C286668F}.Release|x64.ActiveCfg = Release|Any CPU
+		{C20B3CB2-425C-4D3A-B270-7FF7C286668F}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -243,6 +253,7 @@ Global
 		{A55A138D-263D-4D9C-B58A-19171039F64F} = {0A9F1638-088D-4526-8FE5-EA1969CB3632}
 		{761DC3C8-8197-4D00-A434-8455EDCD15EA} = {43C0369A-4C1D-4941-A3C6-8E00C4BE2C66}
 		{26F8CC93-0726-4B8A-B7B5-C8C78D9578AD} = {43C0369A-4C1D-4941-A3C6-8E00C4BE2C66}
+		{C20B3CB2-425C-4D3A-B270-7FF7C286668F} = {43C0369A-4C1D-4941-A3C6-8E00C4BE2C66}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9527C7E5-BE9A-48AB-BFE4-382C6E92922C}

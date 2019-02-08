@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Football.Chat.Models;
+using Football.Chat.Models.Dal;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
@@ -22,8 +23,6 @@ namespace Football.Chat.Repository
             }
 
             messagesCollection = mongoDatabase.GetCollection<Message>(COLLECTION);
-
-            //TODO: indexes.
         }
 
         //TODO: SHOUD BE TESTED WITH LOAD TESTING.
