@@ -11,6 +11,7 @@ namespace Football.Web
     using Data.DataBaseContext;
     using Data.Repository.Implementation;
     using Data.Repository.Interfaces;
+    using Football.Chat.Repository.Extensions;
     using Football.Core.Extensions;
     using Football.Core.Middleware;
     using Football.Web.Validation;
@@ -106,7 +107,7 @@ namespace Football.Web
                 opt =>
                 {
                     opt.UseLazyLoadingProxies();
-                    opt.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
+                    opt.UseSqlServer(this.Configuration.GetConnectionString("SqlConnection"));
                 },
                 contextLifetime: ServiceLifetime.Scoped,
                 optionsLifetime: ServiceLifetime.Scoped);
@@ -118,6 +119,7 @@ namespace Football.Web
             services.AddScoped<IGameRepository, GameRepository>();
             services.AddScoped<IMeetingTimeRepository, MeetingTimeRepository>();
             services.AddScoped<IFriendshipRepository, FriendshipRepository>();
+            services.AddChatRepository();
 
             // Services
             services.AddTokenConfiguration(this.TokenConfiguration);
