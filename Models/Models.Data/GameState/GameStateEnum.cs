@@ -10,18 +10,30 @@ namespace Models.Data.GameState
     public enum GameStateEnum
     {
         /// <summary>
-        /// Game is public and active
+        /// Game is public and active.
+        /// Vote = true,
+        /// Chat = true,
+        /// Delete = true.
+        /// Close = true.
         /// </summary>
-        Public = 0,
+        Open = 0,
 
         /// <summary>
-        /// Game is closed. Allowed chating.
+        /// Game can be closed, deleted or for chating.
+        /// Vote = false,
+        /// Chat = true,
+        /// Delete = true.
+        /// Close = true.
         /// </summary>
-        Closed = 1,
+        ChatOnly = 1,
 
         /// <summary>
-        /// Game can be deleted or for chating.
+        /// Game is closed.
+        /// Vote = false,
+        /// Chat = false,
+        /// Delete = false.
+        /// Close = false.
         /// </summary>
-        ReadOnly = 2
+        Closed = 2,
     }
 }

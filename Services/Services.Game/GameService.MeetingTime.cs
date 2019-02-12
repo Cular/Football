@@ -1,9 +1,7 @@
-﻿using Football.Core.Exceptions;
+﻿using Football.Exceptions;
 using Models.Data;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Services.Game
@@ -23,6 +21,19 @@ namespace Services.Game
             await gameRepository.UpdateAsync(game);
         }
 
+        public async Task AddMeetingTimeAsync(DateTimeOffset meetingtime, Guid gameId)
+        {
+            var game = await this.gameRepository.GetAsync(gameId) ?? throw new NotFoundException($"Game with id:{gameId} not exists.");
+
+            if (game.MeetingTimes.Any(mt => mt.TimeOfMeet == meetingtime))
+            {
+                throw new DublicateException($"Game has meeting time variant {meetingtime}");
+            }
+
+            game.MeetingTimes.Add(new MeetingTime { Id = Guid.NewGuid(), GameId = gameId, TimeOfMeet = meetingtime });
+            await gameRepository.UpdateAsync(game);
+        }
+
         public async Task SetChosenTimeAsync(Guid gameId, Guid meetingtimeId, string playerId)
         {
             var game = await this.gameRepository.GetAsync(gameId) ?? throw new NotFoundException($"Game with id {gameId} not exists.");
@@ -33,13 +44,14 @@ namespace Services.Game
             }
 
             var meetingtime = game.MeetingTimes.FirstOrDefault(mt => mt.Id == meetingtimeId) ?? throw new NotFoundException($"MeetingTime with id {meetingtimeId} not exists.");
-            meetingtime.IsChosen = true;
 
             var oldMeetingTime = game.MeetingTimes.FirstOrDefault(mt => mt.IsChosen);
             if (oldMeetingTime != null)
             {
                 oldMeetingTime.IsChosen = false;
             }
+
+            meetingtime.IsChosen = true;
 
             await this.gameRepository.UpdateAsync(game);
         }

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Data.Repository.Interfaces;
-using Football.Core.Exceptions;
+using Football.Exceptions;
 using Models.Data;
 using Models.Data.GameState;
 
@@ -40,36 +39,44 @@ namespace Services.Game
             return gameRepository.GetAllAsync(g => g.AdminId == playerId);
         }
 
-        public async Task DeleteGameAsync(Guid gameId, string playerId)
+        public async Task<bool> DeleteGameAsync(Guid gameId, string playerId)
         {
             var game = await this.gameRepository.GetAsync(gameId) ?? throw new NotFoundException($"Game with id {gameId} not exists.");
 
-            if (game.AdminId != playerId)
-            {
-                throw new ForbiddenException($"Player with alias {playerId} does not admin in game.");
-            }
-
-            if (game.State.CanDelete)
+            if (game.IsCanBeDeleted(playerId))
             {
                 await this.gameRepository.DeleteAsync(gameId);
+                return true;
             }
+
+            return false;
         }
 
         public async Task<bool> TryInvitePlayerToGameAsync(Guid gameId, string playerId)
         {
             var game = await this.gameRepository.GetAsync(gameId) ?? throw new NotFoundException($"Game with id {gameId} not exists.");
+            var player = await this.playerRepository.GetAsync(playerId) ?? throw new NotFoundException($"Player with id {playerId} not exists.");
 
-            if (game.PlayerGames.Any(pg => pg.PlayerId == playerId))
+            if (game.TryAddPlayer(new PlayerGame { GameId = gameId, PlayerId = playerId }))
             {
-                return false;
+                await this.gameRepository.UpdateAsync(game);
+                return true;
             }
 
-            var player = await this.playerRepository.GetAsync(playerId) ?? throw new NotFoundException($"Player with id {playerId} not exists.");
-            game.PlayerGames.Add(new PlayerGame { GameId = gameId, PlayerId = playerId });
+            return false;
+        }
 
-            await this.gameRepository.UpdateAsync(game);
+        public async Task<bool> ChangeGameStateAsync(Guid gameId, string playerId, GameStateEnum gameStateEnum)
+        {
+            var game = await this.gameRepository.GetAsync(gameId) ?? throw new NotFoundException($"Game with id {gameId} not exists.");
 
-            return true;
+            if (game.TryChangeGameState(playerId, gameStateEnum))
+            {
+                await this.gameRepository.UpdateAsync(game);
+                return true;
+            }
+
+            return false;
         }
     }
 }

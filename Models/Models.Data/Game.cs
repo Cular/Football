@@ -13,7 +13,7 @@ namespace Models.Data
     /// The event for players.
     /// </summary>
     [Table("games")]
-    public class Game : Entity<Guid>
+    public partial class Game : Entity<Guid>
     {
         /// <summary>
         /// Gets or sets the admin identifier.
@@ -36,7 +36,7 @@ namespace Models.Data
         /// Gets or sets state of game.
         /// </summary>
         [Column("state")]
-        public State State { get; set; } //TODO: workaround changing state.
+        public State State { get; set; }
 
         /// <summary>
         /// Gets or sets lift of players in game.

@@ -6,7 +6,7 @@ namespace Data.Repository.Interfaces
 {
     using System;
     using System.Threading.Tasks;
-    using Football.Core.Exceptions;
+    using Football.Exceptions;
     using Models.Data;
 
     /// <summary>

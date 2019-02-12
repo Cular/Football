@@ -10,7 +10,9 @@ namespace Services.Game
     {
         Task<Models.Data.Game> CreateAsync(Models.Data.Game game);
 
-        Task DeleteGameAsync(Guid gameId, string playerId);
+        Task<bool> DeleteGameAsync(Guid gameId, string playerId);
+
+        Task<bool> ChangeGameStateAsync(Guid gameId, string playerId, GameStateEnum gameStateEnum);
 
         Task<List<Models.Data.Game>> GetMyGamesAsync(string playerId);
 
@@ -21,6 +23,8 @@ namespace Services.Game
         Task<bool> TryInvitePlayerToGameAsync(Guid gameId, string playerId);
 
         Task AddMeetingTimeAsync(MeetingTime meetingTime);
+
+        Task AddMeetingTimeAsync(DateTimeOffset meetingtime, Guid gameId);
 
         Task AddVoteAsync(Guid gameId, Guid meetingtimeId, string playerId);
 

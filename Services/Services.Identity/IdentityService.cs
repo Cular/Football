@@ -1,14 +1,12 @@
 ﻿using Data.Repository.Interfaces;
 using Football.Core.Authorization.Claims;
-using Football.Core.Exceptions;
 using Football.Core.Extensions;
+using Football.Exceptions;
 using Models.Data;
 using Models.Infrastructure;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Services.Identity
