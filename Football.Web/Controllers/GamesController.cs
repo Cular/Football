@@ -9,6 +9,7 @@ namespace Football.Web.Controllers
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
+    using Football.Chat.Repository;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Models.Data;
@@ -26,16 +27,19 @@ namespace Football.Web.Controllers
     {
         private readonly IGameService gameService;
         private readonly IMapper mapper;
+        private readonly IChatRepostitory chatRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GamesController"/> class.
         /// </summary>
         /// <param name="gameService">The game service.</param>
         /// <param name="mapper">The mapper.</param>
-        public GamesController(IGameService gameService, IMapper mapper)
+        /// <param name="chatRepository">The chat repository.</param>
+        public GamesController(IGameService gameService, IMapper mapper, IChatRepostitory chatRepository)
         {
             this.gameService = gameService;
             this.mapper = mapper;
+            this.chatRepository = chatRepository;
         }
 
         /// <summary>
@@ -77,6 +81,7 @@ namespace Football.Web.Controllers
 
             if (await this.gameService.DeleteGameAsync(gameId, this.User.Identity.Name))
             {
+                await this.chatRepository.RemoveMessagesAsync(gameId);
                 return this.Ok();
             }
 
