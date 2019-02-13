@@ -15,6 +15,7 @@ namespace Data.DataBaseContext.Map
             builder.HasKey(g => g.Id);
             builder.HasOne(g => g.Admin).WithMany().HasForeignKey(g => g.AdminId).HasPrincipalKey(p => p.Id).OnDelete(DeleteBehavior.SetNull).IsRequired();
             builder.Property(g => g.State).HasConversion(converter).IsRequired();
+            builder.Property(g => g.Name).IsRequired();
         }
     }
 }

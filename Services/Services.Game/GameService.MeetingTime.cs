@@ -1,6 +1,8 @@
 ﻿using Football.Exceptions;
 using Models.Data;
+using Models.Notification;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -54,6 +56,15 @@ namespace Services.Game
             meetingtime.IsChosen = true;
 
             await this.gameRepository.UpdateAsync(game);
+
+            var batchMessage = new BatchMessage
+            {
+                Title = $"Time is chosen for {game.Name}",
+                Text = $"{game.AdminId} sets time - {meetingtime.TimeOfMeet}",
+                UsersIds = game.PlayerGames.Select(pg => pg.PlayerId).Where(id => id != game.AdminId).ToList()
+            };
+
+            await this.pushNotificationService.Notify(batchMessage);
         }
     }
 }

@@ -24,14 +24,11 @@ namespace Football.Web
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
     using Models.Infrastructure;
     using Models.Mapper;
-    using Models.Notification;
     using Services.Game;
     using Services.Identity;
     using Services.Notification;
-    using Services.Notification.Intefraces;
     using Services.Players;
     using Services.Registration;
     using Swashbuckle.AspNetCore.Swagger;
@@ -118,9 +115,11 @@ namespace Football.Web
             services.AddChatRepository();
 
             // Services
+            services.AddHttpClient();
             services.AddTokenConfiguration(this.TokenConfiguration);
             services.AddSmtpClient();
-            services.AddScoped<INotificationService, EmailService>();
+            services.AddEmailService();
+            services.AddFirebaseService();
             services.AddScoped<IRegisterNotifier, RegisterNotifier>();
             services.AddSingleton(this.TokenConfiguration);
             services.AddScoped<IIdentityService, IdentityService>();

@@ -4,16 +4,14 @@
 
 namespace Services.Notification
 {
-    using System;
     using System.Net;
     using System.Net.Mail;
     using System.Threading.Tasks;
-    using Services.Notification.Intefraces;
+    using Services.Notification.Interfaces;
 
     /// <summary>
     /// The google smtp provider.
     /// </summary>
-    /// <seealso cref="Services.Notification.Intefraces.ISmtpClient" />
     /// <seealso cref="System.IDisposable" />
     public class GoogleSmtpClient : ISmtpClient
     {
