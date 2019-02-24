@@ -10,12 +10,12 @@ namespace Services.Notification
     using System.Text;
     using System.Threading.Tasks;
     using Models.Notification;
-    using Services.Notification.Intefraces;
+    using Services.Notification.Interfaces;
 
     /// <summary>
     /// Handle email sending to user.
     /// </summary>
-    public class EmailService : INotificationService
+    public class EmailService : IEmailNotificationService
     {
         private readonly ISmtpClient smtpClient;
 
@@ -44,6 +44,25 @@ namespace Services.Notification
             mail.Body = message.Text;
 
             return this.smtpClient.SendMailAsync(mail);
+        }
+
+        /// <summary>
+        /// Notifies the specified message.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <returns>Void result.</returns>
+        public async Task Notify(BatchMessage message)
+        {
+            MailMessage mail = new MailMessage();
+            mail.From = new MailAddress("cular.live@gmail.com");
+            mail.Subject = message.Title;
+            mail.Body = message.Text;
+
+            foreach (var userId in message.UsersIds)
+            {
+                mail.To.Add(new MailAddress(userId));
+                await this.smtpClient.SendMailAsync(mail);
+            }
         }
     }
 }

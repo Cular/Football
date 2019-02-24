@@ -4,16 +4,16 @@ using Data.Repository.Interfaces;
 using Football.Core.Extensions;
 using Models.Data;
 using Models.Notification;
-using Services.Notification.Intefraces;
+using Services.Notification.Interfaces;
 
 namespace Services.Registration
 {
     public class RegisterNotifier : IRegisterNotifier
     {
-        private readonly INotificationService notificationService;
+        private readonly IEmailNotificationService notificationService;
         private readonly IPlayerActivationRepository activationRepository;
 
-        public RegisterNotifier(INotificationService notificationService, IPlayerActivationRepository activationRepository)
+        public RegisterNotifier(IEmailNotificationService notificationService, IPlayerActivationRepository activationRepository)
         {
             this.notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
             this.activationRepository = activationRepository ?? throw new ArgumentNullException(nameof(activationRepository));

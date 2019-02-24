@@ -16,6 +16,24 @@ namespace Models.Data
     public partial class Game : Entity<Guid>
     {
         /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        /// <value>
+        /// The name.
+        /// </value>
+        [Column("name")]
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the information.
+        /// </summary>
+        /// <value>
+        /// The information.
+        /// </value>
+        [Column("info")]
+        public string Info { get; set; }
+
+        /// <summary>
         /// Gets or sets the admin identifier.
         /// </summary>
         /// <value>

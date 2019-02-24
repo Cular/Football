@@ -2,7 +2,7 @@
 // All rights maybe reserved. © Yarik
 // </copyright>
 
-namespace Services.Notification.Intefraces
+namespace Services.Notification.Interfaces
 {
     using System;
     using System.Net.Mail;

@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Data.Repository.Interfaces;
+using Football.Chat.Repository;
 using Football.Exceptions;
-using Models.Data;
 using Models.Data.GameState;
+using Services.Notification.Interfaces;
 
 namespace Services.Game
 {
@@ -12,11 +13,15 @@ namespace Services.Game
     {
         private readonly IGameRepository gameRepository;
         private readonly IPlayerRepository playerRepository;
+        private readonly IChatRepostitory chatRepository;
+        private readonly IPushNotificationService pushNotificationService;
 
-        public GameService(IGameRepository gameRepository, IPlayerRepository playerRepository)
+        public GameService(IGameRepository gameRepository, IPlayerRepository playerRepository, IChatRepostitory chatRepository, IPushNotificationService pushNotificationService)
         {
             this.gameRepository = gameRepository;
             this.playerRepository = playerRepository;
+            this.chatRepository = chatRepository;
+            this.pushNotificationService = pushNotificationService;
         }
 
         public Task<Models.Data.Game> CreateAsync(Models.Data.Game game)
@@ -39,34 +44,31 @@ namespace Services.Game
             return gameRepository.GetAllAsync(g => g.AdminId == playerId);
         }
 
-        public async Task<bool> DeleteGameAsync(Guid gameId, string playerId)
+        public async Task<bool> TryDeleteGameAsync(Guid gameId, string playerId)
         {
             var game = await this.gameRepository.GetAsync(gameId) ?? throw new NotFoundException($"Game with id {gameId} not exists.");
 
             if (game.IsCanBeDeleted(playerId))
             {
-                await this.gameRepository.DeleteAsync(gameId);
+                await Task.WhenAll(this.gameRepository.DeleteAsync(gameId), this.chatRepository.RemoveMessagesAsync(gameId));
                 return true;
             }
 
             return false;
         }
 
-        public async Task<bool> TryInvitePlayerToGameAsync(Guid gameId, string playerId)
+        public async Task InvitePlayerToGameAsync(Guid gameId, string playerId)
         {
             var game = await this.gameRepository.GetAsync(gameId) ?? throw new NotFoundException($"Game with id {gameId} not exists.");
             var player = await this.playerRepository.GetAsync(playerId) ?? throw new NotFoundException($"Player with id {playerId} not exists.");
 
-            if (game.TryAddPlayer(new PlayerGame { GameId = gameId, PlayerId = playerId }))
+            if (game.TryAddPlayer(playerId))
             {
                 await this.gameRepository.UpdateAsync(game);
-                return true;
             }
-
-            return false;
         }
 
-        public async Task<bool> ChangeGameStateAsync(Guid gameId, string playerId, GameStateEnum gameStateEnum)
+        public async Task<bool> TryChangeGameStateAsync(Guid gameId, string playerId, GameStateEnum gameStateEnum)
         {
             var game = await this.gameRepository.GetAsync(gameId) ?? throw new NotFoundException($"Game with id {gameId} not exists.");
 

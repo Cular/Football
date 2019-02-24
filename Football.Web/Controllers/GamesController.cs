@@ -9,7 +9,6 @@ namespace Football.Web.Controllers
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
-    using Football.Chat.Repository;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Models.Data;
@@ -27,19 +26,16 @@ namespace Football.Web.Controllers
     {
         private readonly IGameService gameService;
         private readonly IMapper mapper;
-        private readonly IChatRepostitory chatRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GamesController"/> class.
         /// </summary>
         /// <param name="gameService">The game service.</param>
         /// <param name="mapper">The mapper.</param>
-        /// <param name="chatRepository">The chat repository.</param>
-        public GamesController(IGameService gameService, IMapper mapper, IChatRepostitory chatRepository)
+        public GamesController(IGameService gameService, IMapper mapper)
         {
             this.gameService = gameService;
             this.mapper = mapper;
-            this.chatRepository = chatRepository;
         }
 
         /// <summary>
@@ -54,7 +50,7 @@ namespace Football.Web.Controllers
             var entity = this.mapper.Map<Game>(dto);
 
             entity.AdminId = this.User.Identity.Name;
-            entity.TryAddPlayer(new PlayerGame { PlayerId = this.User.Identity.Name, GameId = entity.Id });
+            entity.TryAddPlayer(this.User.Identity.Name);
 
             await this.gameService.CreateAsync(entity);
 
@@ -79,9 +75,8 @@ namespace Football.Web.Controllers
                 return this.BadRequest("Game identifier can not be default.");
             }
 
-            if (await this.gameService.DeleteGameAsync(gameId, this.User.Identity.Name))
+            if (await this.gameService.TryDeleteGameAsync(gameId, this.User.Identity.Name))
             {
-                await this.chatRepository.RemoveMessagesAsync(gameId);
                 return this.Ok();
             }
 
@@ -107,7 +102,7 @@ namespace Football.Web.Controllers
                 return this.BadRequest("Game identifier can not be default.");
             }
 
-            if (await this.gameService.ChangeGameStateAsync(gameId, this.User.Identity.Name, gameStateEnum))
+            if (await this.gameService.TryChangeGameStateAsync(gameId, this.User.Identity.Name, gameStateEnum))
             {
                 return this.Ok();
             }
@@ -192,10 +187,7 @@ namespace Football.Web.Controllers
                 return this.BadRequest("GameId or alias can not be default or empty.");
             }
 
-            if (await this.gameService.TryInvitePlayerToGameAsync(gameId, alias))
-            {
-                // ToDo: add push sending call.
-            }
+            await this.gameService.InvitePlayerToGameAsync(gameId, alias);
 
             return this.Ok();
         }

@@ -6,10 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Chat\Football.Chat.Repository\Football.Chat.Repository.csproj" />
     <ProjectReference Include="..\..\Data\Data.Repository\Data.Repository.csproj" />
     <ProjectReference Include="..\..\Football.Exceptions\Football.Exceptions.csproj" />
-    <ProjectReference Include="..\..\Models\Models.Data\Models.Data.csproj" />
   </ItemGroup>
 
 </Project>

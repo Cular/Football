@@ -1,12 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Services.Notification;
-using Services.Notification.Intefraces;
-using System;
-using System.Collections.Generic;
+using Services.Notification.Interfaces;
 using System.Net;
-using System.Net.Mail;
-using System.Text;
 
 namespace Football.Core.Extensions
 {

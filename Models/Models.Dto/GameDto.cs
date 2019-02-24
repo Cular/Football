@@ -20,6 +20,14 @@ namespace Models.Dto
         public Guid Id { get; set; }
 
         /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        /// <value>
+        /// The name.
+        /// </value>
+        public string Name { get; set; }
+
+        /// <summary>
         /// Gets or sets the players involved in game.
         /// </summary>
         public List<PlayerDto> Players { get; set; }

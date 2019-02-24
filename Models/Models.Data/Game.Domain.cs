@@ -19,14 +19,13 @@ namespace Models.Data
         /// <summary>
         /// Tries the add player.
         /// </summary>
-        /// <param name="playerGame">The player game.</param>
+        /// <param name="playerId">The player identifier.</param>
         /// <returns>Successnes of result.</returns>
-        public bool TryAddPlayer(PlayerGame playerGame)
+        public bool TryAddPlayer(string playerId)
         {
-            // Here better to check ability to add player.
-            if (!this.PlayerGames.Contains(playerGame))
+            if (!this.PlayerGames.Any(pg => pg.PlayerId == playerId))
             {
-                this.PlayerGames.Add(playerGame);
+                this.PlayerGames.Add(new PlayerGame { GameId = this.Id, PlayerId = playerId });
                 return true;
             }
 
