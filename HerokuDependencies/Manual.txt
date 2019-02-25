@@ -1,1 +1,0 @@
-https://blog.devcenter.co/deploy-asp-net-core-2-0-apps-on-heroku-eea8efd918b6

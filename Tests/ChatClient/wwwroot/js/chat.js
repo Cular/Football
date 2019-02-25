@@ -4,7 +4,7 @@ var roomId;
 
 function buildConnection(gameId) {
     var connection = new signalR.HubConnectionBuilder()
-        .withUrl("http://" + host + "/hubs/chat", { accessTokenFactory: () => TOKEN })
+        .withUrl(host + "/hubs/chat", { accessTokenFactory: () => TOKEN })
         .build();
 
     roomId = gameId;

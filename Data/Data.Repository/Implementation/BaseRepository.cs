@@ -14,6 +14,7 @@ namespace Data.Repository.Implementation
     using Football.Exceptions;
     using Microsoft.EntityFrameworkCore;
     using Models.Data;
+    using Npgsql;
 
     /// <summary>
     /// The base implementation of repository.
@@ -58,14 +59,31 @@ namespace Data.Repository.Implementation
             }
             catch (DbUpdateException ex)
             {
-                switch ((ex.InnerException as SqlException).Number)
+                if (ex.InnerException is SqlException)
                 {
-                    case 2627:
-                        throw new DublicateException("Email or Alias is already registered.");
+                    switch ((ex.InnerException as SqlException).Number)
+                    {
+                        case 2627:
+                            throw new DublicateException("Email or Alias is already registered.");
 
-                    default:
-                        throw ex;
+                        default:
+                            throw ex;
+                    }
                 }
+
+                if (ex.InnerException is PostgresException)
+                {
+                    switch ((ex.InnerException as PostgresException).Code)
+                    {
+                        case "23505":
+                            throw new DublicateException("Email or Alias is already registered.");
+
+                        default:
+                            throw ex;
+                    }
+                }
+
+                throw ex;
             }
         }
 

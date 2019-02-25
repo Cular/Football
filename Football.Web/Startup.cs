@@ -100,7 +100,9 @@ namespace Football.Web
                 opt =>
                 {
                     opt.UseLazyLoadingProxies();
-                    opt.UseSqlServer(this.Configuration.GetConnectionString("SqlConnection"));
+                    opt.UseNpgsql(this.Configuration.GetConnectionString("SqlConnection"));
+
+                    //opt.UseSqlServer(this.Configuration.GetConnectionString("SqlConnection"));
                 },
                 contextLifetime: ServiceLifetime.Scoped,
                 optionsLifetime: ServiceLifetime.Scoped);
@@ -175,6 +177,7 @@ namespace Football.Web
 
             app.UseSignalR(hrb => hrb.MapHub<ChatHub>("/hubs/chat"));
             app.UseAuthentication();
+            app.UseHttpsRedirection();
             app.UseMvc();
         }
 

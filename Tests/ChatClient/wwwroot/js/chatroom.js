@@ -1,7 +1,7 @@
 ﻿function getRooms() {
 
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'http://' + host + '/api/games', true);
+    xhr.open('GET', host + '/api/games', true);
     
     xhr.setRequestHeader('Accept', 'application/json,text/plain,*/*');
     xhr.setRequestHeader('Content-Type', 'application/json');

@@ -19,9 +19,9 @@ namespace Football.Core.Extensions
             services.AddScoped<IPushNotificationService, FirebasePushService>(sp =>
             {
                 var key = sp.GetService<IConfiguration>().GetSection("FirebaseOptions").GetValue<string>("Key");
-                var httpclient = sp.GetService<HttpClient>();
+                var httpclient = sp.GetService<IHttpClientFactory>().CreateClient();
                 httpclient.BaseAddress = new Uri("https://fcm.googleapis.com/");
-                httpclient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("key=", key);
+                httpclient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("key", key);
 
                 return new FirebasePushService(httpclient);
             });

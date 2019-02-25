@@ -14,8 +14,9 @@ namespace Data.DataBaseContext
 
             var opts = new DbContextOptionsBuilder();
 
-            opts.UseSqlServer(config.GetConnectionString("SqlConnection"));
-            
+            //opts.UseSqlServer(config.GetConnectionString("SqlConnection"));
+            opts.UseNpgsql(config.GetConnectionString("SqlConnection"));
+
             return new FootballContext(opts.Options);
         }
     }

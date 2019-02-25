@@ -1,12 +1,13 @@
-﻿var host = 'localhost:5000';
-var TOKEN = 
+﻿//var host = 'localhost:5000';
+var host = 'https://football-cular-api.herokuapp.com';
+var TOKEN;
 
 document.getElementById("authButton").addEventListener("click", function (event) {
     var username = document.getElementById("login").value;
     var password = document.getElementById("password").value;
 
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', 'http://' + host + '/token', true);
+    xhr.open('POST', host + '/token', true);
 
     xhr.setRequestHeader('Accept', 'application/json,text/plain,*/*');
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
