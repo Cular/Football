@@ -15,41 +15,13 @@ namespace Data.Repository.Implementation
     /// </summary>
     public class PlayerRepository : BaseRepository<Player, string>, IPlayerRepository
     {
-        private readonly DbSet<Player> players;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="PlayerRepository"/> class.
         /// </summary>
-        /// <param name="context">The context.</param>
-        public PlayerRepository(FootballContext context)
-            : base(context)
+        /// <param name="connectionString">The context.</param>
+        public PlayerRepository(string connectionString)
+            : base(connectionString)
         {
-            this.players = context.Players;
-        }
-
-        /// <summary>
-        /// Gets the player by alias.
-        /// </summary>
-        /// <param name="alias">The alias.</param>
-        /// <returns>
-        /// The player.
-        /// </returns>
-        public async Task<Player> GetPlayerByAlias(string alias)
-        {
-            return await this.players.FirstOrDefaultAsync(p => p.Id == alias);
-        }
-
-        /// <summary>
-        /// Determines whether the specified alias is unique.
-        /// </summary>
-        /// <param name="alias">The alias.</param>
-        /// <param name="email">The email.</param>
-        /// <returns>
-        /// Is unique alias and email.
-        /// </returns>
-        public async Task<bool> IsExist(string alias, string email)
-        {
-            return await this.players.AnyAsync(p => p.Email == email || p.Id == alias);
         }
     }
 }

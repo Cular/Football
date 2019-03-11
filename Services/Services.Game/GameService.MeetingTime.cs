@@ -10,30 +10,18 @@ namespace Services.Game
 {
     public partial class GameService
     {
-        public async Task AddMeetingTimeAsync(MeetingTime meetingTime)
-        {
-            var game = await this.gameRepository.GetAsync(meetingTime.GameId) ?? throw new NotFoundException($"Game with id:{meetingTime.GameId} not exists.");
-
-            if (game.MeetingTimes.Any(mt => mt.TimeOfMeet == meetingTime.TimeOfMeet))
-            {
-                return;
-            }
-
-            game.MeetingTimes.Add(meetingTime);
-            await gameRepository.UpdateAsync(game);
-        }
-
         public async Task AddMeetingTimeAsync(DateTimeOffset meetingtime, Guid gameId)
         {
-            var game = await this.gameRepository.GetAsync(gameId) ?? throw new NotFoundException($"Game with id:{gameId} not exists.");
+            var times = await this.meetingTimeRepository.GetByGameId(gameId);
 
-            if (game.MeetingTimes.Any(mt => mt.TimeOfMeet == meetingtime))
+            //var game = await this.gameRepository.GetAsync(gameId) ?? throw new NotFoundException($"Game with id:{gameId} not exists.");
+
+            if (times.Any(mt => mt.TimeOfMeet == meetingtime))
             {
-                throw new DublicateException($"Game has meeting time variant {meetingtime}");
+                throw new DuplicateException($"Game has meeting time variant {meetingtime}");
             }
 
-            game.MeetingTimes.Add(new MeetingTime { Id = Guid.NewGuid(), GameId = gameId, TimeOfMeet = meetingtime });
-            await gameRepository.UpdateAsync(game);
+            await this.meetingTimeRepository.CreateAsync(new MeetingTime { Id = Guid.NewGuid(), GameId = gameId, TimeOfMeet = meetingtime });
         }
 
         public async Task SetChosenTimeAsync(Guid gameId, Guid meetingtimeId, string playerId)
@@ -51,20 +39,20 @@ namespace Services.Game
             if (oldMeetingTime != null)
             {
                 oldMeetingTime.IsChosen = false;
+                await this.meetingTimeRepository.UpdateAsync(oldMeetingTime);
             }
 
             meetingtime.IsChosen = true;
+            await this.meetingTimeRepository.UpdateAsync(meetingtime);
 
-            await this.gameRepository.UpdateAsync(game);
+            //var batchMessage = new BatchMessage
+            //{
+            //    Title = $"Time is chosen for {game.Name}",
+            //    Text = $"{game.AdminId} sets time - {meetingtime.TimeOfMeet}",
+            //    UsersIds = game.PlayerGames.Select(pg => pg.PlayerId).Where(id => id != game.AdminId).ToList()
+            //};
 
-            var batchMessage = new BatchMessage
-            {
-                Title = $"Time is chosen for {game.Name}",
-                Text = $"{game.AdminId} sets time - {meetingtime.TimeOfMeet}",
-                UsersIds = game.PlayerGames.Select(pg => pg.PlayerId).Where(id => id != game.AdminId).ToList()
-            };
-
-            await this.pushNotificationService.Notify(batchMessage);
+            //await this.pushNotificationService.Notify(batchMessage);
         }
     }
 }

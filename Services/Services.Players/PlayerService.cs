@@ -67,7 +67,7 @@ namespace Services.Players
         /// </returns>
         public Task<List<Friendship>> GetFriendshipsAsync(string playerId)
         {
-            return this.friendshipRepository.GetAllAsync(fs => fs.PlayerId == playerId || fs.FriendId == playerId);
+            return this.friendshipRepository.GetAllAsync($"WHERE playerid = '{playerId}' OR friendid = '{playerId}'");
         }
 
         /// <summary>

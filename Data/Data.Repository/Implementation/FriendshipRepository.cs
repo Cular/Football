@@ -22,9 +22,9 @@ namespace Data.Repository.Implementation
         /// <summary>
         /// Initializes a new instance of the <see cref="FriendshipRepository"/> class.
         /// </summary>
-        /// <param name="context">The context.</param>
-        public FriendshipRepository(FootballContext context)
-            : base(context)
+        /// <param name="connectionString">The connectionString.</param>
+        public FriendshipRepository(string connectionString)
+            : base(connectionString)
         {
         }
 
@@ -36,18 +36,12 @@ namespace Data.Repository.Implementation
         /// <returns>
         /// void result
         /// </returns>
-        public async Task CreateAsync(string playerId, string friendId)
+        public Task CreateAsync(string playerId, string friendId)
         {
             var friendship = new Friendship { Id = Guid.NewGuid(), PlayerId = playerId, FriendId = friendId, IsApproved = true };
             var oposite = new Friendship { Id = Guid.NewGuid(), PlayerId = friendId, FriendId = playerId, IsApproved = false };
 
-            using (var transaction = this.context.Database.BeginTransaction())
-            {
-                await this.context.Friendships.AddRangeAsync(friendship, oposite);
-                await this.context.SaveChangesAsync();
-
-                transaction.Commit();
-            }
+            return this.CreateManyAsync(new List<Friendship> { friendship, oposite });
         }
 
         /// <summary>
@@ -58,24 +52,12 @@ namespace Data.Repository.Implementation
         /// void result
         /// </returns>
         /// <exception cref="NotFoundException">Friendship with Id {friendshipId}</exception>
-        public new async Task DeleteAsync(Guid friendshipId)
+        public override async Task DeleteAsync(Guid friendshipId)
         {
-            var deleted = await this.context.Friendships.FirstOrDefaultAsync(fs => fs.Id == friendshipId) ?? throw new NotFoundException($"Friendship with Id {friendshipId} not found.");
-            var oposite = this.context.Friendships.FirstOrDefaultAsync(fs => fs.PlayerId == deleted.FriendId && fs.FriendId == deleted.PlayerId);
+            var deleted = await this.GetAsync(friendshipId) ?? throw new NotFoundException($"Friendship with Id {friendshipId} not found.");
+            var oposite = await this.GetAsync(deleted.FriendId, deleted.PlayerId);
 
-            using (var transaction = this.context.Database.BeginTransaction())
-            {
-                this.context.Friendships.Remove(deleted);
-
-                if (oposite.Result != null)
-                {
-                    this.context.Friendships.Remove(oposite.Result);
-                }
-
-                await this.context.SaveChangesAsync();
-
-                transaction.Commit();
-            }
+            await Task.WhenAll(this.DeleteAsync(deleted), this.DeleteAsync(oposite));
         }
 
         /// <summary>
@@ -89,14 +71,14 @@ namespace Data.Repository.Implementation
         /// <exception cref="NotFoundException">Friendship with playerId:{playerId} and friendId:{friendId}</exception>
         public async Task DeleteAsync(string playerId, string friendId)
         {
-            var shouldDelete = await this.context.Friendships.Where(fs => (fs.PlayerId == playerId && fs.FriendId == friendId) || (fs.PlayerId == friendId && fs.FriendId == playerId)).ToListAsync();
+            var shouldDelete = await this.GetAllAsync($"WHERE (playerid = '{playerId}' AND friendid = '{friendId}') OR (playerid = '{friendId}' AND friendid = '{playerId}')");
+
             if (shouldDelete.Count < 2)
             {
                 throw new NotFoundException($"Friendship with playerId:{playerId} and friendId:{friendId} not found.");
             }
 
-            this.context.Friendships.RemoveRange(shouldDelete);
-            await this.context.SaveChangesAsync();
+            await Task.WhenAll(this.DeleteAsync(shouldDelete[0]), this.DeleteAsync(shouldDelete[1]));
         }
 
         /// <summary>
@@ -107,9 +89,9 @@ namespace Data.Repository.Implementation
         /// <returns>
         /// The friendship by playerId and friendId
         /// </returns>
-        public Task<Friendship> GetAsync(string playerId, string friendId)
+        public async Task<Friendship> GetAsync(string playerId, string friendId)
         {
-            return this.context.Friendships.FirstOrDefaultAsync(fs => fs.PlayerId == playerId && fs.FriendId == friendId);
+            return (await this.GetAsync<Friendship>($"WHERE playerid = @playerId AND friendId = @friendId", new { playerId, friendId })).FirstOrDefault();
         }
 
         /// <summary>
@@ -120,9 +102,9 @@ namespace Data.Repository.Implementation
         /// <returns>
         /// true if exist both varients.
         /// </returns>
-        public Task<bool> IsExists(string playerId, string friendId)
+        public async Task<bool> IsExists(string playerId, string friendId)
         {
-            return this.context.Friendships.AnyAsync(fs => fs.PlayerId == playerId && fs.FriendId == friendId);
+            return await this.GetAsync(playerId, friendId) != null;
         }
     }
 }

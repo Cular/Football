@@ -13,7 +13,7 @@ namespace Models.Data
     /// <summary>
     /// The activation players email.
     /// </summary>
-    [Table("playeractivations")]
+    [Table("playeractivations", Schema = "public")]
     public class PlayerActivation : Entity<string>
     {
         /// <summary>

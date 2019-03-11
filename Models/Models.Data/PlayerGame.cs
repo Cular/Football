@@ -12,7 +12,7 @@ namespace Models.Data
     /// <summary>
     /// The many to many relation binding.
     /// </summary>
-    [Table("playersgames")]
+    [Table("playersgames", Schema = "public")]
     public class PlayerGame
     {
         /// <summary>

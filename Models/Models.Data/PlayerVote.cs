@@ -12,7 +12,7 @@ namespace Models.Data
     /// <summary>
     /// The player vote in game on specified <see cref="MeetingTime"/>.
     /// </summary>
-    [Table("playervotes")]
+    [Table("playervotes", Schema = "public")]
     public class PlayerVote : Entity<Guid>
     {
         /// <summary>

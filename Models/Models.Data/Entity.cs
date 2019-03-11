@@ -4,6 +4,7 @@
 
 namespace Models.Data
 {
+    using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
     /// <summary>
@@ -18,6 +19,7 @@ namespace Models.Data
         /// <value>
         /// The identifier.
         /// </value>
+        [Key]
         [Column("id")]
         public T Id { get; set; }
     }

@@ -12,7 +12,7 @@ namespace Models.Data
     /// <summary>
     /// The entity that describes relation between players.
     /// </summary>
-    [Table("friendships")]
+    [Table("friendships", Schema = "public")]
     public class Friendship : Entity<Guid>
     {
         /// <summary>

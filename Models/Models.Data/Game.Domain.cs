@@ -1,8 +1,4 @@
-﻿// <copyright file="Game.Domain.cs" company="Yarik Home">
-// All rights maybe reserved. © Yarik
-// </copyright>
-
-namespace Models.Data
+﻿namespace Models.Data
 {
     using System;
     using System.Collections.Generic;
@@ -11,21 +7,12 @@ namespace Models.Data
     using Football.Exceptions;
     using Models.Data.GameState;
 
-    /// <summary>
-    /// The domain part.
-    /// </summary>
     public partial class Game
     {
-        /// <summary>
-        /// Tries the add player.
-        /// </summary>
-        /// <param name="playerId">The player identifier.</param>
-        /// <returns>Successnes of result.</returns>
-        public bool TryAddPlayer(string playerId)
+        public bool CanAddPlayer(string playerId)
         {
             if (!this.PlayerGames.Any(pg => pg.PlayerId == playerId))
             {
-                this.PlayerGames.Add(new PlayerGame { GameId = this.Id, PlayerId = playerId });
                 return true;
             }
 
@@ -35,7 +22,6 @@ namespace Models.Data
         /// <summary>
         /// Adds the vote.
         /// </summary>
-        /// <param name="gameId">The game identifier.</param>
         /// <param name="meetingtimeId">The meetingtime identifier.</param>
         /// <param name="playerId">The player identifier.</param>
         /// <exception cref="ForbiddenException">
@@ -44,26 +30,27 @@ namespace Models.Data
         /// Player with alias {playerId} not invited to game with Id {gameId}
         /// </exception>
         /// <exception cref="NotFoundException">MeetingTime with Id {meetingtimeId}</exception>
-        public void AddVote(Guid gameId, Guid meetingtimeId, string playerId)
+        /// <returns></returns>
+        public bool CanBeAddVote(Guid meetingtimeId, string playerId)
         {
             if (!this.State.CanVote)
             {
-                throw new ForbiddenException($"Game with id {gameId} is in state {this.State.ToEnum()}.");
+                throw new ForbiddenException($"Game with id {this.Id} is in state {this.State.ToEnum()}.");
             }
 
             if (!this.PlayerGames.Any(pg => pg.PlayerId == playerId))
             {
-                throw new ForbiddenException($"Player with alias {playerId} not invited to game with Id {gameId}.");
+                throw new ForbiddenException($"Player with alias {playerId} not invited to game with Id {this.Id}.");
             }
 
             var meetingtime = this.MeetingTimes.FirstOrDefault(mt => mt.Id == meetingtimeId) ?? throw new NotFoundException($"MeetingTime with Id {meetingtimeId} not exists.");
 
             if (meetingtime.PlayerVotes.Any(pv => pv.PlayerId == playerId))
             {
-                return;
+                return false;
             }
 
-            meetingtime.PlayerVotes.Add(new PlayerVote { Id = Guid.NewGuid(), MeetingTimeId = meetingtimeId, PlayerId = playerId });
+            return true;
         }
 
         /// <summary>
@@ -74,7 +61,7 @@ namespace Models.Data
         /// <returns>Successness result.</returns>
         /// <exception cref="ForbiddenException">Game with id {this.Id} is in state {this.State.ToEnum()}</exception>
         /// <exception cref="NotFoundException">MeetingTime with Id {meetingtimeId}</exception>
-        public bool TryRemoveVote(Guid meetingtimeId, string playerId)
+        public bool CanRemoveVote(Guid meetingtimeId, string playerId)
         {
             if (!this.State.CanVote)
             {
@@ -84,7 +71,7 @@ namespace Models.Data
             var meetingtime = this.MeetingTimes.FirstOrDefault(mt => mt.Id == meetingtimeId) ?? throw new NotFoundException($"MeetingTime with Id {meetingtimeId} not exists.");
             var playerVote = meetingtime.PlayerVotes.FirstOrDefault(pv => pv.PlayerId == playerId);
 
-            return playerVote == null ? false : meetingtime.PlayerVotes.Remove(playerVote);
+            return playerVote != null;
         }
 
         /// <summary>

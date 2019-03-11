@@ -11,7 +11,7 @@ namespace Models.Data
     /// <summary>
     /// The user.
     /// </summary>
-    [Table("players")]
+    [Table("players", Schema = "public")]
     public class Player : Entity<string>
     {
         /// <summary>

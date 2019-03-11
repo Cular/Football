@@ -12,7 +12,7 @@ namespace Models.Data
     /// <summary>
     /// The event for players.
     /// </summary>
-    [Table("games")]
+    [Table("games", Schema = "public")]
     public partial class Game : Entity<Guid>
     {
         /// <summary>

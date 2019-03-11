@@ -9,6 +9,7 @@ namespace Football.Web
     using System.IO;
     using AutoMapper;
     using Data.DataBaseContext;
+    using Data.Repository.Extensions;
     using Data.Repository.Implementation;
     using Data.Repository.Interfaces;
     using Football.Chat.Models.Mapper;
@@ -99,21 +100,16 @@ namespace Football.Web
             services.AddDbContext<FootballContext>(
                 opt =>
                 {
-                    opt.UseLazyLoadingProxies();
+                    ////opt.UseLazyLoadingProxies();
                     opt.UseNpgsql(this.Configuration.GetConnectionString("SqlConnection"));
 
-                    //opt.UseSqlServer(this.Configuration.GetConnectionString("SqlConnection"));
+                    ////opt.UseSqlServer(this.Configuration.GetConnectionString("SqlConnection"));
                 },
                 contextLifetime: ServiceLifetime.Scoped,
                 optionsLifetime: ServiceLifetime.Scoped);
 
             // Data
-            services.AddScoped<IPlayerRepository, PlayerRepository>();
-            services.AddScoped<IPlayerActivationRepository, PlayerActivationRepository>();
-            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
-            services.AddScoped<IGameRepository, GameRepository>();
-            services.AddScoped<IMeetingTimeRepository, MeetingTimeRepository>();
-            services.AddScoped<IFriendshipRepository, FriendshipRepository>();
+            services.AddRepositories(this.Configuration);
             services.AddChatRepository();
 
             // Services

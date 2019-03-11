@@ -4,12 +4,9 @@
 
 namespace Data.Repository.Implementation
 {
-    using System;
-    using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
     using System.Threading.Tasks;
-    using Data.DataBaseContext;
+    using Dapper;
     using Data.Repository.Interfaces;
     using Microsoft.EntityFrameworkCore;
     using Models.Data;
@@ -19,16 +16,13 @@ namespace Data.Repository.Implementation
     /// </summary>
     public class RefreshTokenRepository : BaseRepository<RefreshToken, string>, IRefreshTokenRepository
     {
-        private readonly DbSet<RefreshToken> tokens;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="RefreshTokenRepository"/> class.
         /// </summary>
-        /// <param name="context">The context.</param>
-        public RefreshTokenRepository(FootballContext context)
-            : base(context)
+        /// <param name="connectionString">The connectionString.</param>
+        public RefreshTokenRepository(string connectionString)
+            : base(connectionString)
         {
-            this.tokens = context.RefreshTokens;
         }
 
         /// <summary>
@@ -38,11 +32,19 @@ namespace Data.Repository.Implementation
         /// <returns>
         /// void result.
         /// </returns>
-        public Task RevokeUsersTokensAsync(string userId)
+        public async Task RevokeUsersTokensAsync(string userId)
         {
-            var utokens = this.tokens.Where(r => r.UserId == userId);
+            var schema = GetSchema(typeof(RefreshToken));
+            var query = $"UPDATE {schema.SchemaName}.{schema.TableName} " +
+                $"SET active = false " +
+                $"WHERE active = true AND userid = @userId";
 
-            return utokens.ForEachAsync(r => r.Active = false);
+            using (var connection = this.Connection)
+            {
+                connection.Open();
+                var result = await connection.ExecuteAsync(query, new { userId });
+                connection.Close();
+            }
         }
     }
 }

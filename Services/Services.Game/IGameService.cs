@@ -8,7 +8,7 @@ namespace Services.Game
 {
     public interface IGameService
     {
-        Task<Models.Data.Game> CreateAsync(Models.Data.Game game);
+        Task CreateAsync(Models.Data.Game game);
 
         Task<bool> TryDeleteGameAsync(Guid gameId, string playerId);
 
@@ -21,8 +21,6 @@ namespace Services.Game
         Task<Models.Data.Game> GetGameAsync(Guid gameId);
 
         Task InvitePlayerToGameAsync(Guid gameId, string playerId);
-
-        Task AddMeetingTimeAsync(MeetingTime meetingTime);
 
         Task AddMeetingTimeAsync(DateTimeOffset meetingtime, Guid gameId);
 

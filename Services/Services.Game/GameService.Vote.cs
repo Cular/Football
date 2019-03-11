@@ -13,18 +13,19 @@ namespace Services.Game
         {
             var game = await this.gameRepository.GetAsync(gameId) ?? throw new NotFoundException($"Game with Id {gameId} not exists.");
 
-            game.AddVote(gameId, meetingtimeId, playerId);
-
-            await this.gameRepository.UpdateAsync(game);
+            if (game.CanBeAddVote(meetingtimeId, playerId))
+            {
+                await this.gameRepository.AddVoteAsync(new Models.Data.PlayerVote { Id = Guid.NewGuid(), MeetingTimeId = meetingtimeId, PlayerId = playerId });
+            }
         }
 
         public async Task RemoveVoteAsync(Guid gameId, Guid meetingtimeId, string playerId)
         {
             var game = await this.gameRepository.GetAsync(gameId) ?? throw new NotFoundException($"Game with Id {gameId} not exists.");
                         
-            if (game.TryRemoveVote(meetingtimeId, playerId))
+            if (game.CanRemoveVote(meetingtimeId, playerId))
             {
-                await this.gameRepository.UpdateAsync(game);
+                await this.gameRepository.RemoveVoteAsync(meetingtimeId, playerId);
             }
         }
     }

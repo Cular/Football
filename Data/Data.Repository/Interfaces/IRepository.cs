@@ -34,9 +34,9 @@ namespace Data.Repository.Interfaces
         /// <summary>
         /// Gets all asynchronous.
         /// </summary>
-        /// <param name="predicate">The predicate.</param>
+        /// <param name="where">The predicate.</param>
         /// <returns>List of entities</returns>
-        Task<List<T>> GetAllAsync(Func<T, bool> predicate);
+        Task<List<T>> GetAllAsync(string where);
 
         /// <summary>
         /// Creates the specified entity asynchronously.
@@ -59,7 +59,7 @@ namespace Data.Repository.Interfaces
         /// <returns>
         /// true if entity has been successfully deleted, otherwize false.
         /// </returns>
-        Task<bool> DeleteAsync(TKey key);
+        Task DeleteAsync(TKey key);
 
         /// <summary>
         /// Deletes the specified entity asynchronously.
@@ -68,6 +68,6 @@ namespace Data.Repository.Interfaces
         /// <returns>
         /// true if entity has been successfully deleted, otherwize false.
         /// </returns>
-        Task<bool> DeleteAsync(T entity);
+        Task DeleteAsync(T entity);
     }
 }

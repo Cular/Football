@@ -30,10 +30,5 @@ namespace Models.Dto
         /// </value>
         [MaxLength(100, ErrorMessage = "Maximal length equals 100")]
         public string Info { get; set; }
-
-        /// <summary>
-        /// Gets or sets the meeting times variants.
-        /// </summary>
-        public List<MeetingTimeCreateDto> MeetingTimes { get; set; }
     }
 }

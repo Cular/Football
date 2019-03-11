@@ -43,18 +43,18 @@ namespace Football.Web.Controllers
         /// </summary>
         /// <param name="dto">Model of game for creation.</param>
         /// <returns>Task</returns>
-        [ProducesResponseType(200)]
+        [ProducesResponseType(200, Type = typeof(Guid))]
         [HttpPost]
         public async Task<IActionResult> CreateGame([FromBody]GameCreateDto dto)
         {
             var entity = this.mapper.Map<Game>(dto);
 
             entity.AdminId = this.User.Identity.Name;
-            entity.TryAddPlayer(this.User.Identity.Name);
+            entity.CanAddPlayer(this.User.Identity.Name);
 
             await this.gameService.CreateAsync(entity);
 
-            return this.Ok();
+            return this.Ok(entity.Id);
         }
 
         /// <summary>
@@ -141,8 +141,6 @@ namespace Football.Web.Controllers
                 return this.BadRequest("Page number can not be less than 1.");
             }
 
-            var context = this.HttpContext;
-
             var result = await this.gameService.GetAllGamesAsync(this.User.Identity.Name, page, count, gameState);
 
             return this.Ok(result.Select(r => this.mapper.Map<GameListItemDto>(r)));
@@ -165,6 +163,11 @@ namespace Football.Web.Controllers
             }
 
             var result = await this.gameService.GetGameAsync(gameId);
+
+            if (result == null)
+            {
+                return this.NotFound();
+            }
 
             return this.Ok(this.mapper.Map<GameDto>(result));
         }

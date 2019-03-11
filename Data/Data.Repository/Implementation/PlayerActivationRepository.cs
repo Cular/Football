@@ -17,9 +17,9 @@ namespace Data.Repository.Implementation
         /// <summary>
         /// Initializes a new instance of the <see cref="PlayerActivationRepository"/> class.
         /// </summary>
-        /// <param name="context">The context.</param>
-        public PlayerActivationRepository(FootballContext context)
-            : base(context)
+        /// <param name="connectionString">The connectionString.</param>
+        public PlayerActivationRepository(string connectionString)
+            : base(connectionString)
         {
         }
     }

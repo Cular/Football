@@ -12,7 +12,7 @@ namespace Models.Data
     /// <summary>
     /// The meeting time of game.
     /// </summary>
-    [Table("meetingtimes")]
+    [Table("meetingtimes", Schema = "public")]
     public class MeetingTime : Entity<Guid>
     {
         /// <summary>

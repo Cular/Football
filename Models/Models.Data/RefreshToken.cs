@@ -14,7 +14,7 @@ namespace Models.Data
     /// <summary>
     /// The refresh token entity
     /// </summary>
-    [Table("refreshtokens")]
+    [Table("refreshtokens", Schema = "public")]
     public class RefreshToken : Entity<string>
     {
         /// <summary>
